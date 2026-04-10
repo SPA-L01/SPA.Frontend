@@ -15,6 +15,7 @@ import { mockUser, mockSessions } from '@/constants/mockData';
 import { router } from 'expo-router';
 
 const MENU_ITEMS = [
+  { icon: 'wallet-outline' as const, label: 'My Wallet', chevron: true },
   { icon: 'car-outline' as const, label: 'My Vehicles', chevron: true },
   { icon: 'heart-outline' as const, label: 'Saved Spots', chevron: true },
   { icon: 'card-outline' as const, label: 'Payment Methods', chevron: true },
@@ -89,6 +90,9 @@ export default function ProfileScreen() {
                 style={styles.menuItem}
                 activeOpacity={0.7}
                 onPress={() => {
+                  if (item.label === 'My Wallet' || item.label === 'Payment Methods') {
+                    router.push('/wallet');
+                  }
                   if (item.label === 'Sign Out') {
                     router.replace('/(auth)/login');
                   }

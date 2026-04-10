@@ -196,18 +196,28 @@ export default function ParkingDetailScreen() {
       {/* Footer */}
       <View style={styles.footer}>
         <View style={styles.priceSection}>
-          <Text style={styles.priceLabel}>Total Price</Text>
+          <Text style={styles.priceLabel}>Tổng thanh toán</Text>
           <Text style={styles.priceValue}>
-            ${totalPrice}{' '}
-            <Text style={styles.priceSub}>/ {hours} hours</Text>
+            {totalPrice.toLocaleString()}đ{' '}
+            <Text style={styles.priceSub}>/ {hours} giờ</Text>
           </Text>
         </View>
         <TouchableOpacity
           style={[styles.bookBtn, !selectedSlot && styles.bookBtnDisabled]}
           activeOpacity={0.85}
           disabled={!selectedSlot}
+          onPress={() => {
+            router.push({
+              pathname: '/payment/checkout',
+              params: {
+                lotId: lot.id,
+                slotCode: selectedSlot?.code,
+                price: totalPrice.toString(),
+              },
+            });
+          }}
         >
-          <Text style={styles.bookBtnText}>Book Slot</Text>
+          <Text style={styles.bookBtnText}>Đặt chỗ ngay</Text>
         </TouchableOpacity>
       </View>
 

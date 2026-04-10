@@ -36,6 +36,26 @@ export interface BookingSession {
   imageUrl: string;
 }
 
+// ─── Finance Models ───────────────────────────────────────────────
+export interface PaymentMethod {
+  id: string;
+  brand: 'visa' | 'mastercard' | 'momo' | 'wallet';
+  last4?: string;
+  expiry?: string;
+  isDefault?: boolean;
+  label: string;
+}
+
+export interface Transaction {
+  id: string;
+  type: 'topup' | 'payment' | 'refund';
+  amount: number;
+  title: string;
+  subtitle: string;
+  date: string;
+  status: 'success' | 'pending' | 'failed';
+}
+
 // ─── Parking Lots HCMC ───────────────────────────────────────────
 export const mockParkingLots: ParkingLot[] = [
   {
@@ -110,7 +130,35 @@ export const mockParkingLots: ParkingLot[] = [
   },
 ];
 
-// ─── Parking Grid Slots ────────────────────────────────────────
+// ─── User & Wallet ──────────────────────────────────────────────
+export const mockUser = {
+  id: 'u1',
+  name: 'Ngô Hoàng Hải',
+  email: 'ngohoanghai@gmail.com',
+  phone: '+84 901 234 567',
+  avatarUrl: '',
+  balance: 2450000,
+  totalBookings: 24,
+  savedSpots: 7,
+  memberSince: '2024',
+};
+
+export const mockPaymentMethods: PaymentMethod[] = [
+  { id: 'p1', brand: 'wallet', label: 'Ví SPA', isDefault: true },
+  { id: 'p2', brand: 'visa', last4: '4242', expiry: '12/26', label: 'Visa (•••• 4242)' },
+  { id: 'p3', brand: 'mastercard', last4: '8812', expiry: '05/25', label: 'Mastercard (•••• 8812)' },
+  { id: 'p4', brand: 'momo', label: 'Ví MoMo' },
+];
+
+export const mockTransactions: Transaction[] = [
+  { id: 't1', type: 'payment', amount: 60000, title: 'Thanh toán bãi xe', subtitle: 'Bitexco Financial Tower', date: 'Hôm nay, 10:42', status: 'success' },
+  { id: 't2', type: 'topup', amount: 500000, title: 'Nạp tiền vào ví', subtitle: 'Từ thẻ Visa •••• 4242', date: 'Hôm qua, 15:20', status: 'success' },
+  { id: 't3', type: 'payment', amount: 15000, title: 'Thanh toán bãi xe', subtitle: 'Vincom Center Đồng Khởi', date: '08 Th04, 09:15', status: 'success' },
+  { id: 't4', type: 'refund', amount: 10000, title: 'Hoàn tiền đặt chỗ', subtitle: 'Saigon Centre', date: '05 Th04, 18:30', status: 'success' },
+  { id: 't5', type: 'payment', amount: 30000, title: 'Thanh toán bãi xe', subtitle: 'Diamond Plaza', date: '01 Th04, 11:00', status: 'success' },
+];
+
+// ─── Grid & Others ──────────────────────────────────────────────
 export const generateParkingSlots = (floor: string): ParkingSlot[] => {
   const floorPrefix = floor.includes('B1') ? 'A' : floor.includes('B2') ? 'B' : 'C';
   const slots: ParkingSlot[] = [];
@@ -127,7 +175,6 @@ export const generateParkingSlots = (floor: string): ParkingSlot[] => {
   return slots;
 };
 
-// ─── Sessions ───────────────────────────────────────────────────
 export const mockSessions: BookingSession[] = [
   {
     id: 's1',
@@ -141,33 +188,8 @@ export const mockSessions: BookingSession[] = [
     status: 'active',
     imageUrl: 'https://images.unsplash.com/photo-1590674899484-d5640e854abe?w=400&q=80',
   },
-  {
-    id: 's2',
-    parkingName: 'Vincom Center Đồng Khởi',
-    address: '72 Lê Thánh Tôn, Quận 1',
-    slotCode: 'A05',
-    date: '2026-04-08',
-    startTime: '09:00',
-    endTime: '17:00',
-    totalPrice: 80000,
-    status: 'completed',
-    imageUrl: 'https://images.unsplash.com/photo-1506521781263-d8422e82f27a?w=400&q=80',
-  },
 ];
 
-// ─── User ────────────────────────────────────────────────────────
-export const mockUser = {
-  id: 'u1',
-  name: 'Ngô Hoàng Hải',
-  email: 'ngohoanghai@gmail.com',
-  phone: '+84 901 234 567',
-  avatarUrl: '', 
-  totalBookings: 24,
-  savedSpots: 7,
-  memberSince: '2024',
-};
-
-// ─── Location HCMC (Bitexco Area) ────────────────────────────────
 export const DEFAULT_LOCATION = {
   latitude: 10.7725,
   longitude: 106.7015,

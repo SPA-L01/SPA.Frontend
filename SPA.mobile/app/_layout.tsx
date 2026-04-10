@@ -22,6 +22,10 @@ export default function RootLayout() {
           <Stack.Screen name="(auth)" options={{ headerShown: false }} />
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="parking/[id]" options={{ headerShown: false }} />
+          <Stack.Screen name="wallet/index" options={{ headerShown: false }} />
+          <Stack.Screen name="wallet/top-up" options={{ headerShown: false }} />
+          <Stack.Screen name="wallet/add-card" options={{ headerShown: false }} />
+          <Stack.Screen name="payment/checkout" options={{ headerShown: false }} />
           <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
         </Stack>
         <StatusBar style="auto" />

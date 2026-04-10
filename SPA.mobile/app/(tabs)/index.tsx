@@ -71,11 +71,23 @@ export default function HomeScreen() {
                 <Text style={styles.greetingName}>{mockUser.name}</Text>
               </View>
             </View>
-            {/* Bell */}
-            <TouchableOpacity style={styles.bellBtn}>
-              <Ionicons name="notifications" size={22} color={palette.white} />
-              <View style={styles.bellDot} />
-            </TouchableOpacity>
+            {/* Balance Chip & Bell */}
+            <View style={styles.topActions}>
+              <TouchableOpacity 
+                style={styles.balanceHeaderChip}
+                onPress={() => router.push('/wallet')}
+              >
+                <Ionicons name="wallet-outline" size={14} color={palette.white} />
+                <Text style={styles.balanceHeaderText}>
+                  {mockUser.balance.toLocaleString()}đ
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.bellBtn}>
+                <Ionicons name="notifications" size={22} color={palette.white} />
+                <View style={styles.bellDot} />
+              </TouchableOpacity>
+            </View>
           </View>
 
           <Text style={styles.heroText}>
@@ -211,6 +223,27 @@ const styles = StyleSheet.create({
     backgroundColor: palette.darkBg2,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  topActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  balanceHeaderChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: palette.darkBg2,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: radius.full,
+    borderWidth: 1,
+    borderColor: palette.white + '10',
+  },
+  balanceHeaderText: {
+    color: palette.white,
+    fontSize: 13,
+    fontWeight: '700',
   },
   bellDot: {
     position: 'absolute',

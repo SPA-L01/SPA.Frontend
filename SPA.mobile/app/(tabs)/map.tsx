@@ -7,10 +7,12 @@ import {
   Dimensions,
   SafeAreaView,
   Platform,
+  TextInput,
+  Keyboard,
 } from 'react-native';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import BottomSheet, { BottomSheetFlatList, BottomSheetView } from '@gorhom/bottom-sheet';
+import BottomSheet, { BottomSheetFlatList, BottomSheetView, BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import * as Haptics from 'expo-haptics';
 
 import { palette, spacing, radius, typography, shadows } from '@/constants/theme';
@@ -38,7 +40,7 @@ export default function MapScreen() {
 
   // Bottom Sheet logic
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const snapPoints = useMemo(() => ['12%', '45%', '85%'], []);
+  const snapPoints = useMemo(() => ['18%', '50%', '90%'], []);
 
   const handleSheetChanges = useCallback((index: number) => {
     if (Platform.OS !== 'web') {
@@ -61,8 +63,9 @@ export default function MapScreen() {
     
     mapRef.current?.animateToRegion({
       ...lot.coordinate,
-      latitudeDelta: 0.01,
-      longitudeDelta: 0.01,
+      latitude: lot.coordinate.latitude - 0.004, // Bù trừ để điểm không bị che bởi BottomSheet
+      latitudeDelta: 0.012,
+      longitudeDelta: 0.012,
     }, 500);
   };
 
@@ -81,7 +84,10 @@ export default function MapScreen() {
           initialRegion={DEFAULT_LOCATION}
           showsUserLocation
           showsMyLocationButton={false}
-          onPress={() => setSelectedId(null)}
+          onPress={() => {
+            setSelectedId(null);
+            Keyboard.dismiss();
+          }}
         >
           {Marker && mockParkingLots.map((lot) => (
             <Marker
@@ -122,16 +128,17 @@ export default function MapScreen() {
       )}
 
       {/* ── Top Overlays ─────────────────────────────────── */}
-      <SafeAreaView style={styles.topOverlay}>
-        <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-          <Ionicons name="chevron-back" size={22} color={palette.textPrimary} />
-        </TouchableOpacity>
+      <SafeAreaView style={styles.topOverlay} pointerEvents="box-none">
+        <View style={styles.topRow}>
+          <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
+            <Ionicons name="chevron-back" size={22} color={palette.textPrimary} />
+          </TouchableOpacity>
 
-        {/* Action Buttons */}
-        <View style={styles.topRightActions}>
-            <TouchableOpacity style={styles.actionFab} onPress={recenter}>
-                <Ionicons name="navigate" size={20} color={palette.textPrimary} />
-            </TouchableOpacity>
+          <View style={{ flex: 1 }} />
+
+          <TouchableOpacity style={styles.actionFab} onPress={recenter}>
+            <Ionicons name="navigate" size={20} color={palette.textPrimary} />
+          </TouchableOpacity>
         </View>
       </SafeAreaView>
 
@@ -146,11 +153,14 @@ export default function MapScreen() {
       >
         <BottomSheetView style={styles.sheetHeader}>
           <Text style={styles.sheetTitle}>Bãi xe khu vực Hồ Chí Minh</Text>
-          <View style={styles.searchWrapper}>
-            <SearchBar
+          <View style={styles.localSearchWrapper}>
+            <Ionicons name="search-outline" size={20} color={palette.textSecondary} />
+            <BottomSheetTextInput
+              style={styles.localSearchInput}
               value={search}
               onChangeText={setSearch}
               placeholder="Tìm kiếm bãi xe..."
+              placeholderTextColor={palette.textSecondary}
             />
           </View>
         </BottomSheetView>
@@ -193,11 +203,14 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     paddingHorizontal: spacing.md,
-    paddingTop: spacing.sm,
     zIndex: 10,
+  },
+  topRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    marginTop: spacing.sm,
   },
   backBtn: {
     width: 44,
@@ -207,9 +220,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     ...shadows.md,
-  },
-  topRightActions: {
-      gap: spacing.sm,
   },
   actionFab: {
     width: 44,
@@ -299,5 +309,22 @@ const styles = StyleSheet.create({
   },
   cardWrapper: {
     marginBottom: spacing.md,
+  },
+  localSearchWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: palette.offWhite,
+    borderRadius: radius.full,
+    paddingHorizontal: spacing.md,
+    height: 52,
+    gap: spacing.sm,
+    borderWidth: 1,
+    borderColor: palette.border,
+    marginTop: spacing.sm,
+  },
+  localSearchInput: {
+    flex: 1,
+    ...typography.body,
+    color: palette.textPrimary,
   },
 });

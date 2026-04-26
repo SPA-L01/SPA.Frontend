@@ -1,0 +1,125 @@
+
+> spa.mobile@1.0.0 test
+> jest --verbose
+
+  console.warn
+    SafeAreaView has been deprecated and will be removed in a future release. Please use 'react-native-safe-area-context' instead. See https://github.com/th3rdwave/react-native-safe-area-context
+
+      28 |       />
+      29 |       
+    > 30 |       <SafeAreaView style={styles.container}>
+         |        ^
+      31 |         <View style={styles.content}>
+      32 |           <View style={styles.imageContainer}>
+      33 |             <View style={styles.iconCircle}>
+
+      at warn (node_modules/react-native/Libraries/Utilities/warnOnce.js:27:11)
+      at Object.warnOnce [as SafeAreaView] (node_modules/react-native/index.js:92:5)
+      at SafeAreaView (app/onboarding.tsx:30:8)
+      at Object.react-stack-bottom-frame (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:13976:20)
+      at renderWithHooks (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:2866:22)
+      at updateFunctionComponent (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6006:19)
+      at beginWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:7474:18)
+      at runWithFiberInDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:1574:13)
+      at performUnitOfWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10972:22)
+      at workLoopSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10816:41)
+      at renderRootSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10797:11)
+      at performWorkOnRoot (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10349:13)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:2094:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:566:34)
+      at Object.<anonymous>.process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:859:10)
+      at actImplementation (node_modules/@testing-library/react-native/src/act.ts:30:25)
+      at renderWithAct (node_modules/@testing-library/react-native/src/render-act.ts:13:11)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:69:33)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:44:10)
+      at Object.<anonymous> (__tests__/AllTests.test.tsx:23:35)
+
+FAIL __tests__/AllTests.test.tsx
+  App Component Tests
+    OnboardingScreen
+      ✓ renders correctly (120 ms)
+      ✓ navigates to login when get started is pressed (4 ms)
+    CategoryButton
+      ✓ renders correctly (1 ms)
+    ParkingCard
+      ✕ renders correctly (18 ms)
+    SearchBar
+      ✓ renders correctly (9 ms)
+
+  ● App Component Tests › ParkingCard › renders correctly
+
+    TypeError: Cannot read properties of undefined (reading 'toFixed')
+
+      29 |       </View>
+      30 |       <View style={styles.distanceBadge}>
+    > 31 |         <Text style={styles.distanceText}>{lot.distance.toFixed(1)} km</Text>
+         |                                                         ^
+      32 |       </View>
+      33 |     </TouchableOpacity>
+      34 |   );
+
+      at toFixed (components/ui/ParkingCard.tsx:31:57)
+      at Object.react-stack-bottom-frame (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:13976:20)
+      at renderWithHooks (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:2866:22)
+      at updateFunctionComponent (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6006:19)
+      at beginWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:7474:18)
+      at runWithFiberInDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:1574:13)
+      at performUnitOfWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10972:22)
+      at workLoopSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10816:41)
+      at renderRootSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10797:11)
+      at performWorkOnRoot (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10384:39)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:2094:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:566:34)
+      at Object.<anonymous>.process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:859:10)
+      at actImplementation (node_modules/@testing-library/react-native/src/act.ts:30:25)
+      at renderWithAct (node_modules/@testing-library/react-native/src/render-act.ts:13:11)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:69:33)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:44:10)
+      at Object.<anonymous> (__tests__/AllTests.test.tsx:54:35)
+
+---------------------------|---------|----------|---------|---------|-------------------
+File                       | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+---------------------------|---------|----------|---------|---------|-------------------
+All files                  |     4.3 |     2.41 |    3.87 |    4.48 |                   
+ app                       |      50 |        0 |      50 |      50 |                   
+  _layout.tsx              |       0 |        0 |       0 |       0 | 8-18              
+  modal.tsx                |       0 |      100 |       0 |       0 | 8-18              
+  onboarding.tsx           |     100 |      100 |     100 |     100 |                   
+ app/(auth)                |       0 |        0 |       0 |       0 |                   
+  _layout.tsx              |       0 |      100 |       0 |       0 | 4                 
+  login.tsx                |       0 |        0 |       0 |       0 | 19-190            
+ app/(tabs)                |       0 |        0 |       0 |       0 |                   
+  _layout.tsx              |       0 |        0 |       0 |       0 | 8-74              
+  explore.tsx              |       0 |        0 |       0 |       0 |                   
+  index.tsx                |       0 |        0 |       0 |       0 | 27-166            
+  map.tsx                  |       0 |        0 |       0 |       0 | 24-209            
+  profile.tsx              |       0 |        0 |       0 |       0 | 17-127            
+  sessions.tsx             |       0 |        0 |       0 |       0 | 15-157            
+ app/parking               |       0 |        0 |       0 |       0 |                   
+  [id].tsx                 |       0 |        0 |       0 |       0 | 19-300            
+ app/payment               |       0 |        0 |       0 |       0 |                   
+  checkout.tsx             |       0 |        0 |       0 |       0 | 19-154            
+ app/wallet                |       0 |        0 |       0 |       0 |                   
+  add-card.tsx             |       0 |        0 |       0 |       0 | 19-196            
+  index.tsx                |       0 |        0 |       0 |       0 | 18-165            
+  top-up.tsx               |       0 |        0 |       0 |       0 | 18-139            
+ components                |       0 |        0 |       0 |       0 |                   
+  external-link.tsx        |       0 |        0 |       0 |       0 | 8-18              
+  haptic-tab.tsx           |       0 |        0 |       0 |       0 | 6-14              
+  hello-wave.tsx           |       0 |      100 |       0 |       0 | 4                 
+  parallax-scroll-view.tsx |       0 |        0 |       0 |       0 | 14-65             
+  themed-text.tsx          |       0 |        0 |       0 |       0 | 18-36             
+  themed-view.tsx          |       0 |      100 |       0 |       0 | 11-13             
+ components/ui             |   44.44 |    26.08 |   33.33 |   47.05 |                   
+  CategoryButton.tsx       |     100 |       50 |     100 |     100 | 32-41             
+  ParkingCard.tsx          |   66.66 |    66.66 |      50 |   66.66 | 17                
+  SearchBar.tsx            |     100 |        0 |     100 |     100 | 12                
+  collapsible.tsx          |       0 |        0 |       0 |       0 | 11-35             
+  icon-symbol.ios.tsx      |       0 |        0 |       0 |       0 | 17                
+  icon-symbol.tsx          |       0 |        0 |       0 |       0 | 16-40             
+---------------------------|---------|----------|---------|---------|-------------------
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 4 passed, 5 total
+Snapshots:   0 total
+Time:        0.689 s, estimated 1 s
+Ran all test suites.

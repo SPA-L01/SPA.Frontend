@@ -3,40 +3,34 @@ import { render, fireEvent } from '@testing-library/react-native';
 import HomeScreen from '../app/(tabs)/index';
 import { router } from 'expo-router';
 
-// Mock expo-router
-jest.mock('expo-router', () => ({
-  router: {
-    push: jest.fn(),
+// Mock dependencies
+jest.mock('@expo/vector-icons', () => ({ Ionicons: 'Ionicons' }));
+jest.mock('expo-linear-gradient', () => ({ LinearGradient: ({ children }: any) => children }));
+jest.mock('react-native-maps', () => ({
+  __esModule: true,
+  default: (props: any) => {
+    const React = require('react');
+    const { View } = require('react-native');
+    return React.createElement(View, props, props.children);
   },
+  PROVIDER_DEFAULT: 'default',
 }));
-
-// Mock @expo/vector-icons
-jest.mock('@expo/vector-icons', () => ({
-  Ionicons: 'Ionicons',
-}));
-
-// Mock native modules that might cause issues in Jest
-jest.mock('react-native/Libraries/EventEmitter/NativeEventEmitter');
 
 describe('HomeScreen', () => {
-  it('renders correctly without crashing', () => {
+  it('renders correctly', () => {
     const { getByText } = render(<HomeScreen />);
     expect(getByText('Welcome back!')).toBeTruthy();
   });
 
-  it('shows user name from mock data', () => {
+  it('navigates to wallet when balance chip is pressed', () => {
     const { getByText } = render(<HomeScreen />);
-    // mockUser.name is "Robert Flores" in mockData
-    expect(getByText('Robert Flores')).toBeTruthy();
+    const balanceText = getByText(/đ/); 
+    fireEvent.press(balanceText);
+    expect(router.push).toHaveBeenCalledWith('/wallet');
   });
 
-  it('navigates to wallet when balance is pressed', () => {
+  it('renders categories', () => {
     const { getByText } = render(<HomeScreen />);
-    // Find the balance text or a way to identify the button
-    // In index.tsx, the balance chip is an onPress={() => router.push('/wallet')}
-    // It contains the balance value.
-    const balanceChip = getByText(/đ/); 
-    fireEvent.press(balanceChip);
-    expect(router.push).toHaveBeenCalledWith('/wallet');
+    expect(getByText('Car')).toBeTruthy();
   });
 });

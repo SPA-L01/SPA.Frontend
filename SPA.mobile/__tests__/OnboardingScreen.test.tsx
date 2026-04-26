@@ -3,25 +3,9 @@ import { render, fireEvent } from '@testing-library/react-native';
 import OnboardingScreen from '../app/onboarding';
 import { router } from 'expo-router';
 
-// Mock expo-router
-jest.mock('expo-router', () => ({
-  router: {
-    replace: jest.fn(),
-  },
-}));
-
-// Mock expo-linear-gradient
-jest.mock('expo-linear-gradient', () => {
-  const React = require('react');
-  return {
-    LinearGradient: ({ children }: { children: React.ReactNode }) => children,
-  };
-});
-
-// Mock @expo/vector-icons
-jest.mock('@expo/vector-icons', () => ({
-  Ionicons: 'Ionicons',
-}));
+// Mock dependencies
+jest.mock('@expo/vector-icons', () => ({ Ionicons: 'Ionicons' }));
+jest.mock('expo-linear-gradient', () => ({ LinearGradient: ({ children }: any) => children }));
 
 describe('OnboardingScreen', () => {
   it('renders correctly', () => {
@@ -29,16 +13,15 @@ describe('OnboardingScreen', () => {
     expect(getByText('Welcome to SPA Parking')).toBeTruthy();
   });
 
-  it('contains the get started button', () => {
-    const { getByTestID } = render(<OnboardingScreen />);
-    const button = getByTestID('get-started-button');
-    expect(button).toBeTruthy();
-  });
-
   it('navigates to login when get started is pressed', () => {
-    const { getByTestID } = render(<OnboardingScreen />);
-    const button = getByTestID('get-started-button');
+    const { getByText } = render(<OnboardingScreen />);
+    const button = getByText('Get Started');
     fireEvent.press(button);
     expect(router.replace).toHaveBeenCalledWith('/(auth)/login');
+  });
+
+  it('renders subtitle', () => {
+    const { getByText } = render(<OnboardingScreen />);
+    expect(getByText(/Finding a parking spot/)).toBeTruthy();
   });
 });

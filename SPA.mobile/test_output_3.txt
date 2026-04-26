@@ -1,0 +1,275 @@
+
+> spa.mobile@1.0.0 test
+> jest --verbose
+
+  console.warn
+    The global process.env.EXPO_OS is not defined. This should be inlined by babel-preset-expo during transformation.
+
+      14 | import { Ionicons } from '@expo/vector-icons';
+      15 | import BottomSheet, { BottomSheetFlatList, BottomSheetView, BottomSheetTextInput } from '@gorhom/bottom-sheet';
+    > 16 | import * as Haptics from 'expo-haptics';
+         | ^
+      17 |
+      18 | import { palette, spacing, radius, typography, shadows } from '@/constants/theme';
+      19 | import { ParkingCard } from '@/components/ui/ParkingCard';
+
+      at Object.warn (node_modules/expo-modules-core/src/Platform.ts:15:11)
+      at Object.require (node_modules/expo-modules-core/src/sweet/setUpJsLogger.fx.ts:2:1)
+      at Object.require (node_modules/expo-modules-core/src/index.ts:1:1)
+      at node_modules/jest-expo/src/preset/setup.js:233:32
+      at Object.require (node_modules/expo-haptics/src/Haptics.ts:1:1)
+      at Object.require (/Volumes/ssd/GithubCode/SPA/SPA.FE/SPA.mobile/app/(tabs)../../../../../../map.tsx:16:1)
+      at Object.require (__tests__/AllTests.test.tsx:6:1)
+
+  console.warn
+    SafeAreaView has been deprecated and will be removed in a future release. Please use 'react-native-safe-area-context' instead. See https://github.com/th3rdwave/react-native-safe-area-context
+
+      28 |       />
+      29 |       
+    > 30 |       <SafeAreaView style={styles.container}>
+         |        ^
+      31 |         <View style={styles.content}>
+      32 |           <View style={styles.imageContainer}>
+      33 |             <View style={styles.iconCircle}>
+
+      at warn (node_modules/react-native/Libraries/Utilities/warnOnce.js:27:11)
+      at Object.warnOnce [as SafeAreaView] (node_modules/react-native/index.js:92:5)
+      at SafeAreaView (app/onboarding.tsx:30:8)
+      at Object.react-stack-bottom-frame (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:13976:20)
+      at renderWithHooks (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:2866:22)
+      at updateFunctionComponent (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6006:19)
+      at beginWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:7474:18)
+      at runWithFiberInDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:1574:13)
+      at performUnitOfWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10972:22)
+      at workLoopSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10816:41)
+      at renderRootSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10797:11)
+      at performWorkOnRoot (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10349:13)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:2094:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:566:34)
+      at Object.<anonymous>.process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:859:10)
+      at actImplementation (node_modules/@testing-library/react-native/src/act.ts:30:25)
+      at renderWithAct (node_modules/@testing-library/react-native/src/render-act.ts:13:11)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:69:33)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:44:10)
+      at Object.<anonymous> (__tests__/AllTests.test.tsx:36:35)
+
+FAIL __tests__/AllTests.test.tsx
+  App Component Tests
+    OnboardingScreen
+      ✓ renders correctly (16 ms)
+      ✓ navigates to login when get started is pressed (2 ms)
+    HomeScreen
+      ✓ renders correctly (22 ms)
+    LoginScreen
+      ✓ renders correctly (7 ms)
+    MapScreen
+      ✕ renders correctly (11 ms)
+    SessionsScreen
+      ✕ renders correctly (5 ms)
+    CategoryButton
+      ✓ renders correctly
+    ParkingCard
+      ✓ renders correctly (1 ms)
+    SearchBar
+      ✓ renders correctly (1 ms)
+
+  ● App Component Tests › MapScreen › renders correctly
+
+    TypeError: layoutState.get is not a function
+
+      63 |   describe('MapScreen', () => {
+      64 |     it('renders correctly', () => {
+    > 65 |       const { getByPlaceholderText } = render(<MapScreen />);
+         |                                              ^
+      66 |       expect(getByPlaceholderText('Search parking spots...')).toBeTruthy();
+      67 |     });
+      68 |   });
+
+      at get (node_modules/@gorhom/bottom-sheet/src/hooks/useAnimatedDetents.ts:32:74)
+      at processor (node_modules/react-native-reanimated/src/mock.ts:90:20)
+      at useAnimatedDetents (node_modules/@gorhom/bottom-sheet/src/hooks/useAnimatedDetents.ts:31:32)
+      at BottomSheet (node_modules/@gorhom/bottom-sheet/src/components/bottomSheet/BottomSheet.tsx:197:52)
+      at Object.react-stack-bottom-frame (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:13976:20)
+      at renderWithHooks (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:2866:22)
+      at updateForwardRef (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5758:19)
+      at beginWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:7586:18)
+      at runWithFiberInDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:1574:13)
+      at performUnitOfWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10972:22)
+      at workLoopSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10816:41)
+      at renderRootSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10797:11)
+      at performWorkOnRoot (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10384:39)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:2094:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:566:34)
+      at Object.<anonymous>.process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:859:10)
+      at actImplementation (node_modules/@testing-library/react-native/src/act.ts:30:25)
+      at renderWithAct (node_modules/@testing-library/react-native/src/render-act.ts:13:11)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:69:33)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:44:10)
+      at Object.<anonymous> (__tests__/AllTests.test.tsx:65:46)
+
+  ● App Component Tests › SessionsScreen › renders correctly
+
+    Unable to find an element with text: Parking History
+
+    [36m<View>[39m
+      [36m<View>[39m
+        [36m<RCTSafeAreaView>[39m
+          [36m<Text>[39m
+            [0mMy Sessions[0m
+          [36m</Text>[39m
+          [36m<Text>[39m
+            [0m1[0m
+            [0m bookings total[0m
+          [36m</Text>[39m
+          [36m<View>[39m
+            [36m<View[39m
+              [33maccessible[39m=[32m{true}[39m
+            [36m>[39m
+              [36m<Text>[39m
+                [0mAll[0m
+              [36m</Text>[39m
+            [36m</View>[39m
+            [36m<View[39m
+              [33maccessible[39m=[32m{true}[39m
+            [36m>[39m
+              [36m<Text>[39m
+                [0mActive[0m
+              [36m</Text>[39m
+            [36m</View>[39m
+            [36m<View[39m
+              [33maccessible[39m=[32m{true}[39m
+            [36m>[39m
+              [36m<Text>[39m
+                [0mDone[0m
+              [36m</Text>[39m
+            [36m</View>[39m
+            [36m<View[39m
+              [33maccessible[39m=[32m{true}[39m
+            [36m>[39m
+              [36m<Text>[39m
+                [0mCancelled[0m
+              [36m</Text>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+        [36m</RCTSafeAreaView>[39m
+      [36m</View>[39m
+      [36m<RCTScrollView>[39m
+        [36m<View>[39m
+          [36m<View>[39m
+            [36m<View>[39m
+              [36m<View>[39m
+                [36m<Text>[39m
+                  [0mBãi xe Bitexco Financial[0m
+                [36m</Text>[39m
+                [36m<Text>[39m
+                  [0m2 Hải Triều, Quận 1[0m
+                [36m</Text>[39m
+              [36m</View>[39m
+              [36m<View>[39m
+                [36m<View />[39m
+                [36m<Text>[39m
+                  [0mActive[0m
+                [36m</Text>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+            [36m<View />[39m
+            [36m<View>[39m
+              [36m<View>[39m
+                [36m<Ionicons />[39m
+                [36m<Text>[39m
+                  [0mSlot[0m
+                [36m</Text>[39m
+                [36m<Text>[39m
+                  [0mB12[0m
+                [36m</Text>[39m
+              [36m</View>[39m
+              [36m<View>[39m
+                [36m<Ionicons />[39m
+                [36m<Text>[39m
+                  [0mDate[0m
+                [36m</Text>[39m
+                [36m<Text>[39m
+                  [0m2026-04-10[0m
+                [36m</Text>[39m
+              [36m</View>[39m
+              [36m<View>[39m
+                [36m<Ionicons />[39m
+                [36m<Text>[39m
+                  [0mTime[0m
+                [36m</Text>[39m
+                [36m<Text>[39m
+                  [0m10:00 - 14:00[0m
+                [36m</Text>[39m
+              [36m</View>[39m
+              [36m<View>[39m
+                [36m<Ionicons />[39m
+                [36m<Text>[39m
+                  [0mTotal[0m
+                [36m</Text>[39m
+                [36m<Text>[39m
+                  [0m$60000[0m
+                [36m</Text>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View />[39m
+        [36m</View>[39m
+      [36m</RCTScrollView>[39m
+    [36m</View>[39m
+
+      71 |     it('renders correctly', () => {
+      72 |       const { getByText } = render(<SessionsScreen />);
+    > 73 |       expect(getByText('Parking History')).toBeTruthy();
+         |              ^
+      74 |     });
+      75 |   });
+      76 |
+
+      at Object.getByText (__tests__/AllTests.test.tsx:73:14)
+
+---------------------------|---------|----------|---------|---------|--------------------------------------
+File                       | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s                    
+---------------------------|---------|----------|---------|---------|--------------------------------------
+All files                  |   24.17 |    15.32 |   13.95 |   24.82 |                                      
+ app                       |      50 |        0 |      50 |      50 |                                      
+  _layout.tsx              |       0 |        0 |       0 |       0 | 8-18                                 
+  modal.tsx                |       0 |      100 |       0 |       0 | 8-18                                 
+  onboarding.tsx           |     100 |      100 |     100 |     100 |                                      
+ app/(auth)                |      50 |       50 |   11.11 |      50 |                                      
+  _layout.tsx              |       0 |      100 |       0 |       0 | 4                                    
+  login.tsx                |   52.63 |       50 |    12.5 |   52.63 | 30-33,95-127                         
+ app/(tabs)                |   52.08 |     30.3 |   31.57 |   52.68 |                                      
+  _layout.tsx              |       0 |        0 |       0 |       0 | 8-74                                 
+  explore.tsx              |       0 |        0 |       0 |       0 |                                      
+  index.tsx                |   86.66 |       50 |      60 |   86.66 | 78,145                               
+  map.tsx                  |   53.06 |     37.5 |   28.57 |   52.08 | 46-63,71-72,83-89,98,113-114,121-197 
+  profile.tsx              |       0 |        0 |       0 |       0 | 17-127                               
+  sessions.tsx             |   84.61 |       80 |   71.42 |   91.66 | 122                                  
+ app/parking               |       0 |        0 |       0 |       0 |                                      
+  [id].tsx                 |       0 |        0 |       0 |       0 | 19-300                               
+ app/payment               |       0 |        0 |       0 |       0 |                                      
+  checkout.tsx             |       0 |        0 |       0 |       0 | 19-154                               
+ app/wallet                |       0 |        0 |       0 |       0 |                                      
+  add-card.tsx             |       0 |        0 |       0 |       0 | 19-196                               
+  index.tsx                |       0 |        0 |       0 |       0 | 18-165                               
+  top-up.tsx               |       0 |        0 |       0 |       0 | 18-139                               
+ components                |       0 |        0 |       0 |       0 |                                      
+  external-link.tsx        |       0 |        0 |       0 |       0 | 8-18                                 
+  haptic-tab.tsx           |       0 |        0 |       0 |       0 | 6-14                                 
+  hello-wave.tsx           |       0 |      100 |       0 |       0 | 4                                    
+  parallax-scroll-view.tsx |       0 |        0 |       0 |       0 | 14-65                                
+  themed-text.tsx          |       0 |        0 |       0 |       0 | 18-36                                
+  themed-view.tsx          |       0 |      100 |       0 |       0 | 11-13                                
+ components/ui             |   44.44 |    43.47 |   33.33 |   47.05 |                                      
+  CategoryButton.tsx       |     100 |      100 |     100 |     100 |                                      
+  ParkingCard.tsx          |   66.66 |    66.66 |      50 |   66.66 | 17                                   
+  SearchBar.tsx            |     100 |        0 |     100 |     100 | 12                                   
+  collapsible.tsx          |       0 |        0 |       0 |       0 | 11-35                                
+  icon-symbol.ios.tsx      |       0 |        0 |       0 |       0 | 17                                   
+  icon-symbol.tsx          |       0 |        0 |       0 |       0 | 16-40                                
+---------------------------|---------|----------|---------|---------|--------------------------------------
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 7 passed, 9 total
+Snapshots:   0 total
+Time:        1.235 s, estimated 7 s
+Ran all test suites.

@@ -14,12 +14,17 @@ jest.mock('expo-router', () => ({
     replace: jest.fn(),
     push: jest.fn(),
     back: jest.fn(),
+    replace_mock: jest.fn(), // Helper for easy access
   },
   useRouter: () => ({
     replace: jest.fn(),
     push: jest.fn(),
     back: jest.fn(),
   }),
+  useLocalSearchParams: () => ({}),
+  useSegments: () => ([]),
+  Stack: ({ children }: any) => children,
+  Tabs: ({ children }: any) => children,
 }));
 
 jest.mock('expo-constants', () => ({
@@ -60,3 +65,15 @@ jest.mock('react-native-maps', () => {
     PROVIDER_DEFAULT: 'default',
   };
 });
+jest.mock('axios', () => ({
+  create: jest.fn(() => ({
+    get: jest.fn(() => Promise.resolve({ data: [] })),
+    post: jest.fn(() => Promise.resolve({ data: {} })),
+    interceptors: {
+      request: { use: jest.fn(), eject: jest.fn() },
+      response: { use: jest.fn(), eject: jest.fn() },
+    },
+  })),
+  get: jest.fn(() => Promise.resolve({ data: [] })),
+  post: jest.fn(() => Promise.resolve({ data: {} })),
+}));

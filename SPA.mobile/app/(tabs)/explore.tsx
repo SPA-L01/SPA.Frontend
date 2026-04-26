@@ -1,3 +1,6 @@
-// This file is the "Map" tab in the bottom navigation
-// It re-exports the map screen content
-export { default } from './map';
+import React from 'react';
+import MapScreen from './map';
+
+export default function ExploreScreen() {
+  return <MapScreen />;
+}

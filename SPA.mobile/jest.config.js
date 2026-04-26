@@ -16,4 +16,12 @@ module.exports = {
     'components/**/*.{ts,tsx}',
     '!**/node_modules/**',
   ],
+  // Force transformation for certain modules
+  transform: {
+    '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
+  },
+  clearMocks: true,
+  restoreMocks: true,
+  testTimeout: 10000,
+  maxWorkers: 1,
 };

@@ -1,0 +1,755 @@
+
+> spa.mobile@1.0.0 test
+> jest --verbose
+
+  console.warn
+    The global process.env.EXPO_OS is not defined. This should be inlined by babel-preset-expo during transformation.
+
+      14 | import { Ionicons } from '@expo/vector-icons';
+      15 | import BottomSheet, { BottomSheetFlatList, BottomSheetView, BottomSheetTextInput } from '@gorhom/bottom-sheet';
+    > 16 | import * as Haptics from 'expo-haptics';
+         | ^
+      17 |
+      18 | import { palette, spacing, radius, typography, shadows } from '@/constants/theme';
+      19 | import { ParkingCard } from '@/components/ui/ParkingCard';
+
+      at Object.warn (node_modules/expo-modules-core/src/Platform.ts:15:11)
+      at Object.require (node_modules/expo-modules-core/src/sweet/setUpJsLogger.fx.ts:2:1)
+      at Object.require (node_modules/expo-modules-core/src/index.ts:1:1)
+      at node_modules/jest-expo/src/preset/setup.js:233:32
+      at Object.require (node_modules/expo-haptics/src/Haptics.ts:1:1)
+      at Object.require (/Volumes/ssd/GithubCode/SPA/SPA.FE/SPA.mobile/app/(tabs)../../../../../../map.tsx:16:1)
+      at Object.require (/Volumes/ssd/GithubCode/SPA/SPA.FE/SPA.mobile/app/(tabs)../../../../../../explore.tsx:3:1)
+      at Object.require (__tests__/AllTests.test.tsx:3:1)
+
+  console.warn
+    SafeAreaView has been deprecated and will be removed in a future release. Please use 'react-native-safe-area-context' instead. See https://github.com/th3rdwave/react-native-safe-area-context
+
+      28 |       />
+      29 |       
+    > 30 |       <SafeAreaView style={styles.container}>
+         |        ^
+      31 |         <View style={styles.content}>
+      32 |           <View style={styles.imageContainer}>
+      33 |             <View style={styles.iconCircle}>
+
+      at warn (node_modules/react-native/Libraries/Utilities/warnOnce.js:27:11)
+      at Object.warnOnce [as SafeAreaView] (node_modules/react-native/index.js:92:5)
+      at SafeAreaView (app/onboarding.tsx:30:8)
+      at Object.react-stack-bottom-frame (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:13976:20)
+      at renderWithHooks (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:2866:22)
+      at updateFunctionComponent (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6006:19)
+      at beginWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:7474:18)
+      at runWithFiberInDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:1574:13)
+      at performUnitOfWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10972:22)
+      at workLoopSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10816:41)
+      at renderRootSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10797:11)
+      at performWorkOnRoot (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10349:13)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:2094:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:566:34)
+      at Object.<anonymous>.process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:859:10)
+      at actImplementation (node_modules/@testing-library/react-native/src/act.ts:30:25)
+      at renderWithAct (node_modules/@testing-library/react-native/src/render-act.ts:13:11)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:69:33)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:44:10)
+      at Object.<anonymous> (__tests__/AllTests.test.tsx:53:35)
+
+  console.error
+    Each child in a list should have a unique "key" prop.
+    
+    Check the render method of `View`. It was passed a child from BottomSheetFlatList. See https://react.dev/link/warning-keys for more information.
+
+      80 |   describe('MapScreen', () => {
+      81 |     it('renders correctly', () => {
+    > 82 |       const { getByText } = render(<MapScreen />);
+         |                                   ^
+      83 |       expect(getByText('Bãi xe khu vực Hồ Chí Minh')).toBeTruthy();
+      84 |     });
+      85 |   });
+
+      at node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14140:21
+      at runWithFiberInDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:1574:13)
+      at warnForMissingKey (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14139:11)
+      at warnOnInvalidKey (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:4728:13)
+      at reconcileChildrenArray (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:4807:31)
+      at reconcileChildFibersImpl (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5122:30)
+      at node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5227:33
+      at reconcileChildren (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5735:13)
+      at beginWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:7551:13)
+      at runWithFiberInDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:1574:13)
+      at performUnitOfWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10972:22)
+      at workLoopSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10816:41)
+      at renderRootSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10797:11)
+      at performWorkOnRoot (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10349:13)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:2094:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:566:34)
+      at Object.<anonymous>.process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:859:10)
+      at actImplementation (node_modules/@testing-library/react-native/src/act.ts:30:25)
+      at renderWithAct (node_modules/@testing-library/react-native/src/render-act.ts:13:11)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:69:33)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:44:10)
+      at Object.<anonymous> (__tests__/AllTests.test.tsx:82:35)
+
+  console.error
+    An update to MapScreen inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+      57 |         console.error('Failed to fetch parking locations:', error);
+      58 |       } finally {
+    > 59 |         setLoading(false);
+         |         ^
+      60 |       }
+      61 |     };
+      62 |
+
+      at node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11801:19
+      at runWithFiberInDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:1574:13)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11800:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10326:9)
+      at dispatchSetStateInternal (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:4148:13)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:4107:7)
+      at setLoading (/Volumes/ssd/GithubCode/SPA/SPA.FE/SPA.mobile/app/(tabs)../../../../../../map.tsx:59:9)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  console.error
+    An update to MapScreen inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+      57 |         console.error('Failed to fetch parking locations:', error);
+      58 |       } finally {
+    > 59 |         setLoading(false);
+         |         ^
+      60 |       }
+      61 |     };
+      62 |
+
+      at node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11801:19
+      at runWithFiberInDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:1574:13)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11800:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10326:9)
+      at dispatchSetStateInternal (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:4148:13)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:4107:7)
+      at setLoading (/Volumes/ssd/GithubCode/SPA/SPA.FE/SPA.mobile/app/(tabs)../../../../../../map.tsx:59:9)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+FAIL __tests__/AllTests.test.tsx
+  App Component Tests
+    OnboardingScreen
+      ✓ renders correctly (65 ms)
+      ✓ navigates to login when get started is pressed (2 ms)
+    HomeScreen
+      ✓ renders correctly (44 ms)
+    LoginScreen
+      ✓ renders correctly (9 ms)
+    MapScreen
+      ✓ renders correctly (15 ms)
+    SessionsScreen
+      ✓ renders correctly (3 ms)
+    ProfileScreen
+      ✓ renders correctly (3 ms)
+    WalletScreen
+      ✕ renders correctly (5 ms)
+    SearchScreen
+      ✕ renders correctly (13 ms)
+    CategoryButton
+      ✓ renders correctly
+    ParkingCard
+      ✓ renders correctly
+    SearchBar
+      ✓ renders correctly (1 ms)
+
+  ● App Component Tests › WalletScreen › renders correctly
+
+    Unable to find an element with text: Wallet
+
+    [36m<View>[39m
+      [36m<View>[39m
+        [36m<RCTSafeAreaView>[39m
+          [36m<View>[39m
+            [36m<View[39m
+              [33maccessible[39m=[32m{true}[39m
+            [36m>[39m
+              [36m<Ionicons />[39m
+            [36m</View>[39m
+            [36m<Text>[39m
+              [0mVí tiền của tôi[0m
+            [36m</Text>[39m
+            [36m<View[39m
+              [33maccessible[39m=[32m{true}[39m
+            [36m>[39m
+              [36m<Ionicons />[39m
+            [36m</View>[39m
+          [36m</View>[39m
+        [36m</RCTSafeAreaView>[39m
+      [36m</View>[39m
+      [36m<RCTScrollView>[39m
+        [36m<View>[39m
+          [36m<View>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mSố dư khả dụng[0m
+              [36m</Text>[39m
+              [36m<Text>[39m
+                [0m2,450,000[0m
+                [0mđ[0m
+              [36m</Text>[39m
+            [36m</View>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mSPA[0m
+              [36m</Text>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View />[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mNGÔ HOÀNG HẢI[0m
+            [36m</Text>[39m
+            [36m<View>[39m
+              [36m<View>[39m
+                [36m<View />[39m
+                [36m<View />[39m
+              [36m</View>[39m
+              [36m<Text>[39m
+                [0mPlatinum Member[0m
+              [36m</Text>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<View[39m
+              [33maccessible[39m=[32m{true}[39m
+            [36m>[39m
+              [36m<View>[39m
+                [36m<Ionicons />[39m
+              [36m</View>[39m
+              [36m<Text>[39m
+                [0mNạp tiền[0m
+              [36m</Text>[39m
+            [36m</View>[39m
+            [36m<View[39m
+              [33maccessible[39m=[32m{true}[39m
+            [36m>[39m
+              [36m<View>[39m
+                [36m<Ionicons />[39m
+              [36m</View>[39m
+              [36m<Text>[39m
+                [0mThêm thẻ[0m
+              [36m</Text>[39m
+            [36m</View>[39m
+            [36m<View[39m
+              [33maccessible[39m=[32m{true}[39m
+            [36m>[39m
+              [36m<View>[39m
+                [36m<Ionicons />[39m
+              [36m</View>[39m
+              [36m<Text>[39m
+                [0mChuyển tiền[0m
+              [36m</Text>[39m
+            [36m</View>[39m
+            [36m<View[39m
+              [33maccessible[39m=[32m{true}[39m
+            [36m>[39m
+              [36m<View>[39m
+                [36m<Ionicons />[39m
+              [36m</View>[39m
+              [36m<Text>[39m
+                [0mHóa đơn[0m
+              [36m</Text>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mGiao dịch gần đây[0m
+            [36m</Text>[39m
+            [36m<View[39m
+              [33maccessible[39m=[32m{true}[39m
+            [36m>[39m
+              [36m<Text>[39m
+                [0mXem tất cả[0m
+              [36m</Text>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<View>[39m
+              [36m<View>[39m
+                [36m<Ionicons />[39m
+              [36m</View>[39m
+              [36m<View>[39m
+                [36m<Text>[39m
+                  [0mThanh toán bãi xe[0m
+                [36m</Text>[39m
+                [36m<Text>[39m
+                  [0mBitexco Financial Tower[0m
+                [36m</Text>[39m
+                [36m<Text>[39m
+                  [0mHôm nay, 10:42[0m
+                [36m</Text>[39m
+              [36m</View>[39m
+              [36m<View>[39m
+                [36m<Text>[39m
+                  [0m-[0m
+                  [0m60,000[0m
+                  [0mđ[0m
+                [36m</Text>[39m
+                [36m<View>[39m
+                  [36m<Text>[39m
+                    [0mThành công[0m
+                  [36m</Text>[39m
+                [36m</View>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+            [36m<View />[39m
+            [36m<View>[39m
+              [36m<View>[39m
+                [36m<Ionicons />[39m
+              [36m</View>[39m
+              [36m<View>[39m
+                [36m<Text>[39m
+                  [0mNạp tiền vào ví[0m
+                [36m</Text>[39m
+                [36m<Text>[39m
+                  [0mTừ thẻ Visa •••• 4242[0m
+                [36m</Text>[39m
+                [36m<Text>[39m
+                  [0mHôm qua, 15:20[0m
+                [36m</Text>[39m
+              [36m</View>[39m
+              [36m<View>[39m
+                [36m<Text>[39m
+                  [0m+[0m
+                  [0m500,000[0m
+                  [0mđ[0m
+                [36m</Text>[39m
+                [36m<View>[39m
+                  [36m<Text>[39m
+                    [0mThành công[0m
+                  [36m</Text>[39m
+                [36m</View>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+            [36m<View />[39m
+            [36m<View>[39m
+              [36m<View>[39m
+                [36m<Ionicons />[39m
+              [36m</View>[39m
+              [36m<View>[39m
+                [36m<Text>[39m
+                  [0mThanh toán bãi xe[0m
+                [36m</Text>[39m
+                [36m<Text>[39m
+                  [0mVincom Center Đồng Khởi[0m
+                [36m</Text>[39m
+                [36m<Text>[39m
+                  [0m08 Th04, 09:15[0m
+                [36m</Text>[39m
+              [36m</View>[39m
+              [36m<View>[39m
+                [36m<Text>[39m
+                  [0m-[0m
+                  [0m15,000[0m
+                  [0mđ[0m
+                [36m</Text>[39m
+                [36m<View>[39m
+                  [36m<Text>[39m
+                    [0mThành công[0m
+                  [36m</Text>[39m
+                [36m</View>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+            [36m<View />[39m
+            [36m<View>[39m
+              [36m<View>[39m
+                [36m<Ionicons />[39m
+              [36m</View>[39m
+              [36m<View>[39m
+                [36m<Text>[39m
+                  [0mHoàn tiền đặt chỗ[0m
+                [36m</Text>[39m
+                [36m<Text>[39m
+                  [0mSaigon Centre[0m
+                [36m</Text>[39m
+                [36m<Text>[39m
+                  [0m05 Th04, 18:30[0m
+                [36m</Text>[39m
+              [36m</View>[39m
+              [36m<View>[39m
+                [36m<Text>[39m
+                  [0m+[0m
+                  [0m10,000[0m
+                  [0mđ[0m
+                [36m</Text>[39m
+                [36m<View>[39m
+                  [36m<Text>[39m
+                    [0mThành công[0m
+                  [36m</Text>[39m
+                [36m</View>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+            [36m<View />[39m
+            [36m<View>[39m
+              [36m<View>[39m
+                [36m<Ionicons />[39m
+              [36m</View>[39m
+              [36m<View>[39m
+                [36m<Text>[39m
+                  [0mThanh toán bãi xe[0m
+                [36m</Text>[39m
+                [36m<Text>[39m
+                  [0mDiamond Plaza[0m
+                [36m</Text>[39m
+                [36m<Text>[39m
+                  [0m01 Th04, 11:00[0m
+                [36m</Text>[39m
+              [36m</View>[39m
+              [36m<View>[39m
+                [36m<Text>[39m
+                  [0m-[0m
+                  [0m30,000[0m
+                  [0mđ[0m
+                [36m</Text>[39m
+                [36m<View>[39m
+                  [36m<Text>[39m
+                    [0mThành công[0m
+                  [36m</Text>[39m
+                [36m</View>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View />[39m
+        [36m</View>[39m
+      [36m</RCTScrollView>[39m
+    [36m</View>[39m
+
+      102 |     it('renders correctly', () => {
+      103 |       const { getByText } = render(<WalletScreen />);
+    > 104 |       expect(getByText('Wallet')).toBeTruthy();
+          |              ^
+      105 |     });
+      106 |   });
+      107 |
+
+      at Object.getByText (__tests__/AllTests.test.tsx:104:14)
+
+  ● App Component Tests › SearchScreen › renders correctly
+
+    Unable to find an element with placeholder: Search parking location...
+
+    [36m<View>[39m
+      [36m<MapView>[39m
+        [36m<Marker>[39m
+          [36m<View>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mP[0m
+              [36m</Text>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+        [36m</Marker>[39m
+        [36m<Marker>[39m
+          [36m<View>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mP[0m
+              [36m</Text>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+        [36m</Marker>[39m
+        [36m<Marker>[39m
+          [36m<View>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mP[0m
+              [36m</Text>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+        [36m</Marker>[39m
+        [36m<Marker>[39m
+          [36m<View>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mP[0m
+              [36m</Text>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+        [36m</Marker>[39m
+        [36m<Marker>[39m
+          [36m<View>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mP[0m
+              [36m</Text>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+        [36m</Marker>[39m
+      [36m</MapView>[39m
+      [36m<RCTSafeAreaView[39m
+        [33mpointerEvents[39m=[32m"box-none"[39m
+      [36m>[39m
+        [36m<View>[39m
+          [36m<View[39m
+            [33maccessible[39m=[32m{true}[39m
+          [36m>[39m
+            [36m<Ionicons />[39m
+          [36m</View>[39m
+          [36m<View />[39m
+          [36m<View[39m
+            [33maccessible[39m=[32m{true}[39m
+          [36m>[39m
+            [36m<Ionicons />[39m
+          [36m</View>[39m
+        [36m</View>[39m
+      [36m</RCTSafeAreaView>[39m
+      [36m<View>[39m
+        [36m<View>[39m
+          [36m<Text>[39m
+            [0mBãi xe khu vực Hồ Chí Minh[0m
+          [36m</Text>[39m
+          [36m<View>[39m
+            [36m<Ionicons />[39m
+            [36m<View />[39m
+          [36m</View>[39m
+        [36m</View>[39m
+        [36m<View>[39m
+          [36m<View>[39m
+            [36m<View[39m
+              [33maccessible[39m=[32m{true}[39m
+            [36m>[39m
+              [36m<Image />[39m
+              [36m<View>[39m
+                [36m<Text>[39m
+                  [0mBãi xe Bitexco Financial[0m
+                [36m</Text>[39m
+                [36m<Text>[39m
+                  [0m2 Hải Triều, Bến Nghé, Quận 1[0m
+                [36m</Text>[39m
+                [36m<View>[39m
+                  [36m<Text>[39m
+                    [36m<Text>[39m
+                      [0m$[0m
+                      [0m15000[0m
+                    [36m</Text>[39m
+                    [0m [0m
+                    [0m/ [0m
+                    [0m45[0m
+                    [0m free[0m
+                  [36m</Text>[39m
+                [36m</View>[39m
+              [36m</View>[39m
+              [36m<View>[39m
+                [36m<Text>[39m
+                  [0m0.5[0m
+                  [0m km[0m
+                [36m</Text>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<View[39m
+              [33maccessible[39m=[32m{true}[39m
+            [36m>[39m
+              [36m<Image />[39m
+              [36m<View>[39m
+                [36m<Text>[39m
+                  [0mVincom Center Đồng Khởi[0m
+                [36m</Text>[39m
+                [36m<Text>[39m
+                  [0m72 Lê Thánh Tôn, Bến Nghé, Quận 1[0m
+                [36m</Text>[39m
+                [36m<View>[39m
+                  [36m<Text>[39m
+                    [36m<Text>[39m
+                      [0m$[0m
+                      [0m10000[0m
+                    [36m</Text>[39m
+                    [0m [0m
+                    [0m/ [0m
+                    [0m120[0m
+                    [0m free[0m
+                  [36m</Text>[39m
+                [36m</View>[39m
+              [36m</View>[39m
+              [36m<View>[39m
+                [36m<Text>[39m
+                  [0m0.8[0m
+                  [0m km[0m
+                [36m</Text>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<View[39m
+              [33maccessible[39m=[32m{true}[39m
+            [36m>[39m
+              [36m<Image />[39m
+              [36m<View>[39m
+                [36m<Text>[39m
+                  [0mBãi xe ngầm Công viên Lê Lai[0m
+                [36m</Text>[39m
+                [36m<Text>[39m
+                  [0mCông viên 23/9, Phạm Ngũ Lão, Quận 1[0m
+                [36m</Text>[39m
+                [36m<View>[39m
+                  [36m<Text>[39m
+                    [36m<Text>[39m
+                      [0m$[0m
+                      [0m6000[0m
+                    [36m</Text>[39m
+                    [0m [0m
+                    [0m/ [0m
+                    [0m250[0m
+                    [0m free[0m
+                  [36m</Text>[39m
+                [36m</View>[39m
+              [36m</View>[39m
+              [36m<View>[39m
+                [36m<Text>[39m
+                  [0m1.2[0m
+                  [0m km[0m
+                [36m</Text>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<View[39m
+              [33maccessible[39m=[32m{true}[39m
+            [36m>[39m
+              [36m<Image />[39m
+              [36m<View>[39m
+                [36m<Text>[39m
+                  [0mSaigon Centre (Takashimaya)[0m
+                [36m</Text>[39m
+                [36m<Text>[39m
+                  [0m65 Lê Lợi, Bến Nghé, Quận 1[0m
+                [36m</Text>[39m
+                [36m<View>[39m
+                  [36m<Text>[39m
+                    [36m<Text>[39m
+                      [0m$[0m
+                      [0m20000[0m
+                    [36m</Text>[39m
+                    [0m [0m
+                    [0m/ [0m
+                    [0m15[0m
+                    [0m free[0m
+                  [36m</Text>[39m
+                [36m</View>[39m
+              [36m</View>[39m
+              [36m<View>[39m
+                [36m<Text>[39m
+                  [0m0.3[0m
+                  [0m km[0m
+                [36m</Text>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<View[39m
+              [33maccessible[39m=[32m{true}[39m
+            [36m>[39m
+              [36m<Image />[39m
+              [36m<View>[39m
+                [36m<Text>[39m
+                  [0mDiamond Plaza Parking[0m
+                [36m</Text>[39m
+                [36m<Text>[39m
+                  [0m34 Lê Duẩn, Bến Nghé, Quận 1[0m
+                [36m</Text>[39m
+                [36m<View>[39m
+                  [36m<Text>[39m
+                    [36m<Text>[39m
+                      [0m$[0m
+                      [0m10000[0m
+                    [36m</Text>[39m
+                    [0m [0m
+                    [0m/ [0m
+                    [0m30[0m
+                    [0m free[0m
+                  [36m</Text>[39m
+                [36m</View>[39m
+              [36m</View>[39m
+              [36m<View>[39m
+                [36m<Text>[39m
+                  [0m1.5[0m
+                  [0m km[0m
+                [36m</Text>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+        [36m</View>[39m
+      [36m</View>[39m
+    [36m</View>[39m
+
+      109 |     it('renders correctly', () => {
+      110 |       const { getByPlaceholderText } = render(<SearchScreen />);
+    > 111 |       expect(getByPlaceholderText('Search parking location...')).toBeTruthy();
+          |              ^
+      112 |     });
+      113 |   });
+      114 |
+
+      at Object.getByPlaceholderText (__tests__/AllTests.test.tsx:111:14)
+
+---------------------------|---------|----------|---------|---------|--------------------------------------
+File                       | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s                    
+---------------------------|---------|----------|---------|---------|--------------------------------------
+All files                  |   31.45 |    27.82 |   20.93 |   32.06 |                                      
+ app                       |      50 |        0 |      50 |      50 |                                      
+  _layout.tsx              |       0 |        0 |       0 |       0 | 8-18                                 
+  modal.tsx                |       0 |      100 |       0 |       0 | 8-18                                 
+  onboarding.tsx           |     100 |      100 |     100 |     100 |                                      
+ app/(auth)                |      50 |       50 |   11.11 |      50 |                                      
+  _layout.tsx              |       0 |      100 |       0 |       0 | 4                                    
+  login.tsx                |   52.63 |       50 |    12.5 |   52.63 | 30-33,95-127                         
+ app/(tabs)                |   66.66 |    51.51 |   47.36 |   66.66 |                                      
+  _layout.tsx              |       0 |        0 |       0 |       0 | 8-74                                 
+  explore.tsx              |       0 |        0 |       0 |       0 |                                      
+  index.tsx                |   86.66 |       50 |      60 |   86.66 | 78,145                               
+  map.tsx                  |   69.38 |       50 |      50 |   68.75 | 54-57,71-72,83-89,98,113-114,121-195 
+  profile.tsx              |      60 |    61.11 |      75 |   55.55 | 93-97                                
+  sessions.tsx             |   84.61 |       80 |   71.42 |   91.66 | 122                                  
+ app/parking               |       0 |        0 |       0 |       0 |                                      
+  [id].tsx                 |       0 |        0 |       0 |       0 | 19-300                               
+ app/payment               |       0 |        0 |       0 |       0 |                                      
+  checkout.tsx             |       0 |        0 |       0 |       0 | 19-154                               
+ app/wallet                |   13.11 |    24.28 |   11.53 |   13.55 |                                      
+  add-card.tsx             |       0 |        0 |       0 |       0 | 19-196                               
+  index.tsx                |   72.72 |       85 |      50 |   72.72 | 58-119                               
+  top-up.tsx               |       0 |        0 |       0 |       0 | 18-139                               
+ components                |       0 |        0 |       0 |       0 |                                      
+  external-link.tsx        |       0 |        0 |       0 |       0 | 8-18                                 
+  haptic-tab.tsx           |       0 |        0 |       0 |       0 | 6-14                                 
+  hello-wave.tsx           |       0 |      100 |       0 |       0 | 4                                    
+  parallax-scroll-view.tsx |       0 |        0 |       0 |       0 | 14-65                                
+  themed-text.tsx          |       0 |        0 |       0 |       0 | 18-36                                
+  themed-view.tsx          |       0 |      100 |       0 |       0 | 11-13                                
+ components/ui             |   44.44 |    43.47 |   33.33 |   47.05 |                                      
+  CategoryButton.tsx       |     100 |      100 |     100 |     100 |                                      
+  ParkingCard.tsx          |   66.66 |    66.66 |      50 |   66.66 | 17                                   
+  SearchBar.tsx            |     100 |        0 |     100 |     100 | 12                                   
+  collapsible.tsx          |       0 |        0 |       0 |       0 | 11-35                                
+  icon-symbol.ios.tsx      |       0 |        0 |       0 |       0 | 17                                   
+  icon-symbol.tsx          |       0 |        0 |       0 |       0 | 16-40                                
+---------------------------|---------|----------|---------|---------|--------------------------------------
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 10 passed, 12 total
+Snapshots:   0 total
+Time:        0.77 s, estimated 1 s
+Ran all test suites.

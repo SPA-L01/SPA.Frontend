@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1777205850696" clover="3.2.0">
-  <project timestamp="1777205850696" name="All files">
-    <metrics statements="278" coveredstatements="0" conditionals="244" coveredconditionals="0" methods="127" coveredmethods="0" elements="649" coveredelements="0" complexity="0" loc="278" ncloc="278" packages="8" files="28" classes="28"/>
+<coverage generated="1777206411813" clover="3.2.0">
+  <project timestamp="1777206411813" name="All files">
+    <metrics statements="290" coveredstatements="0" conditionals="248" coveredconditionals="0" methods="129" coveredmethods="0" elements="667" coveredelements="0" complexity="0" loc="290" ncloc="290" packages="8" files="28" classes="28"/>
     <package name="app">
       <metrics statements="10" coveredstatements="0" conditionals="2" coveredconditionals="0" methods="4" coveredmethods="0"/>
       <file name="_layout.tsx" path="/Volumes/ssd/GithubCode/SPA/SPA.FE/SPA.mobile/app/_layout.tsx">
@@ -54,7 +54,7 @@
       </file>
     </package>
     <package name="app.(tabs)">
-      <metrics statements="81" coveredstatements="0" conditionals="62" coveredconditionals="0" methods="36" coveredmethods="0"/>
+      <metrics statements="93" coveredstatements="0" conditionals="66" coveredconditionals="0" methods="38" coveredmethods="0"/>
       <file name="_layout.tsx" path="/Volumes/ssd/GithubCode/SPA/SPA.FE/SPA.mobile/app/(tabs)/_layout.tsx">
         <metrics statements="9" coveredstatements="0" conditionals="8" coveredconditionals="0" methods="8" coveredmethods="0"/>
         <line num="8" count="0" type="stmt"/>
@@ -89,7 +89,7 @@
         <line num="166" count="0" type="stmt"/>
       </file>
       <file name="map.tsx" path="/Volumes/ssd/GithubCode/SPA/SPA.FE/SPA.mobile/app/(tabs)/map.tsx">
-        <metrics statements="36" coveredstatements="0" conditionals="20" coveredconditionals="0" methods="12" coveredmethods="0"/>
+        <metrics statements="48" coveredstatements="0" conditionals="24" coveredconditionals="0" methods="14" coveredmethods="0"/>
         <line num="24" count="0" type="stmt"/>
         <line num="25" count="0" type="stmt"/>
         <line num="26" count="0" type="stmt"/>
@@ -98,34 +98,46 @@
         <line num="29" count="0" type="stmt"/>
         <line num="30" count="0" type="stmt"/>
         <line num="31" count="0" type="stmt"/>
-        <line num="34" count="0" type="stmt"/>
-        <line num="37" count="0" type="stmt"/>
-        <line num="38" count="0" type="stmt"/>
+        <line num="36" count="0" type="stmt"/>
         <line num="39" count="0" type="stmt"/>
+        <line num="40" count="0" type="stmt"/>
+        <line num="41" count="0" type="stmt"/>
         <line num="42" count="0" type="stmt"/>
         <line num="43" count="0" type="stmt"/>
         <line num="45" count="0" type="stmt"/>
-        <line num="46" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="46" count="0" type="stmt"/>
         <line num="47" count="0" type="stmt"/>
-        <line num="51" count="0" type="stmt"/>
-        <line num="53" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="48" count="0" type="stmt"/>
+        <line num="49" count="0" type="stmt"/>
+        <line num="53" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="54" count="0" type="stmt"/>
         <line num="57" count="0" type="stmt"/>
-        <line num="58" count="0" type="stmt"/>
-        <line num="59" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="60" count="0" type="stmt"/>
-        <line num="62" count="0" type="stmt"/>
-        <line num="64" count="0" type="stmt"/>
+        <line num="59" count="0" type="stmt"/>
+        <line num="63" count="0" type="stmt"/>
+        <line num="67" count="0" type="stmt"/>
+        <line num="68" count="0" type="stmt"/>
+        <line num="70" count="0" type="stmt"/>
+        <line num="71" count="0" type="cond" truecount="0" falsecount="2"/>
         <line num="72" count="0" type="stmt"/>
-        <line num="73" count="0" type="stmt"/>
         <line num="76" count="0" type="stmt"/>
-        <line num="88" count="0" type="stmt"/>
+        <line num="78" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="82" count="0" type="stmt"/>
+        <line num="83" count="0" type="stmt"/>
+        <line num="84" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="85" count="0" type="stmt"/>
+        <line num="87" count="0" type="stmt"/>
         <line num="89" count="0" type="stmt"/>
-        <line num="93" count="0" type="stmt"/>
-        <line num="96" count="0" type="stmt"/>
-        <line num="133" count="0" type="stmt"/>
-        <line num="170" count="0" type="stmt"/>
-        <line num="172" count="0" type="stmt"/>
-        <line num="184" count="0" type="stmt"/>
+        <line num="97" count="0" type="stmt"/>
+        <line num="98" count="0" type="stmt"/>
+        <line num="101" count="0" type="stmt"/>
+        <line num="113" count="0" type="stmt"/>
+        <line num="114" count="0" type="stmt"/>
+        <line num="118" count="0" type="stmt"/>
+        <line num="121" count="0" type="stmt"/>
+        <line num="158" count="0" type="stmt"/>
+        <line num="195" count="0" type="stmt"/>
+        <line num="197" count="0" type="stmt"/>
+        <line num="209" count="0" type="stmt"/>
       </file>
       <file name="profile.tsx" path="/Volumes/ssd/GithubCode/SPA/SPA.FE/SPA.mobile/app/(tabs)/profile.tsx">
         <metrics statements="9" coveredstatements="0" conditionals="18" coveredconditionals="0" methods="4" coveredmethods="0"/>

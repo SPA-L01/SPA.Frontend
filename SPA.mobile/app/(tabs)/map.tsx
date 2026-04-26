@@ -31,12 +31,37 @@ if (Platform.OS !== 'web') {
   PROVIDER_DEFAULT = Maps.PROVIDER_DEFAULT;
 }
 
+import { parkingService } from '@/services/api';
+
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 export default function MapScreen() {
   const [search, setSearch] = useState('');
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [parkingLots, setParkingLots] = useState<any[]>(mockParkingLots);
+  const [loading, setLoading] = useState(false);
   const mapRef = useRef<any>(null);
+
+  React.useEffect(() => {
+    const fetchLots = async () => {
+      setLoading(true);
+      try {
+        const data = await parkingService.getNearbyLocations(
+          DEFAULT_LOCATION.latitude,
+          DEFAULT_LOCATION.longitude
+        );
+        if (data && data.length > 0) {
+          setParkingLots(data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch parking locations:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLots();
+  }, []);
 
   // Bottom Sheet logic
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -48,7 +73,7 @@ export default function MapScreen() {
     }
   }, []);
 
-  const filteredLots = mockParkingLots.filter(
+  const filteredLots = parkingLots.filter(
     (l) =>
       l.name.toLowerCase().includes(search.toLowerCase()) ||
       l.address.toLowerCase().includes(search.toLowerCase())
@@ -89,7 +114,7 @@ export default function MapScreen() {
             Keyboard.dismiss();
           }}
         >
-          {Marker && mockParkingLots.map((lot) => (
+          {Marker && parkingLots.map((lot) => (
             <Marker
               key={lot.id}
               coordinate={lot.coordinate}

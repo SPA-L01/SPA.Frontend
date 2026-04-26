@@ -1,8 +1,24 @@
-# Welcome to your Expo app 👋
+# SPA Parking Mobile 👋
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+[![Test and Coverage](https://github.com/your-username/your-repo/actions/workflows/test.yml/badge.svg)](https://github.com/your-username/your-repo/actions/workflows/test.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=spa-parking-mobile&metric=alert_status)](https://sonarcloud.io/dashboard?id=spa-parking-mobile)
 
-## Get started
+This is an [Expo](https://expo.dev) project for SPA Parking application.
+
+## 🧪 Testing
+
+### Run tests locally
+```bash
+npm test
+```
+
+### Run tests with coverage
+```bash
+npm run test:coverage
+```
+The coverage report will be generated in the `coverage/lcov-report/index.html` file.
+
+## 🚀 Get started
 
 1. Install dependencies
 

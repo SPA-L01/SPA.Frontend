@@ -1,7 +1,7 @@
 # SPA Parking Mobile 👋
 
-[![Test and Coverage](https://github.com/your-username/your-repo/actions/workflows/test.yml/badge.svg)](https://github.com/your-username/your-repo/actions/workflows/test.yml)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=spa-parking-mobile&metric=alert_status)](https://sonarcloud.io/dashboard?id=spa-parking-mobile)
+[![Test and Coverage](https://github.com/SPA-L01/SPA.Frontend/actions/workflows/test.yml/badge.svg)](https://github.com/SPA-L01/SPA.Frontend/actions/workflows/test.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=SPA-L01_SPA.Frontend&metric=alert_status)](https://sonarcloud.io/dashboard?id=SPA-L01_SPA.Frontend)
 
 This is an [Expo](https://expo.dev) project for SPA Parking application.
 

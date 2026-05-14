@@ -15,23 +15,36 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { palette, spacing, radius, typography, shadows } from '@/constants/theme';
+import { useAuth } from '@/context/AuthContext';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 export default function LoginScreen() {
+  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [emailFocused, setEmailFocused] = useState(false);
   const [passwordFocused, setPasswordFocused] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
+    if (!email || !password) {
+      setError('Please enter email and password');
+      return;
+    }
+    setError('');
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      await login({ email, password });
       router.replace('/(tabs)');
-    }, 1200);
+    } catch (err: any) {
+      const msg = err?.response?.data?.message;
+      setError(Array.isArray(msg) ? msg[0] : (msg ?? 'Invalid credentials'));
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -71,6 +84,12 @@ export default function LoginScreen() {
           <View style={styles.card}>
             <Text style={styles.cardTitle}>Welcome back</Text>
             <Text style={styles.cardSubtitle}>Sign in to your account</Text>
+
+            {error ? (
+              <View style={styles.errorBox}>
+                <Text style={styles.errorText}>{error}</Text>
+              </View>
+            ) : null}
 
             {/* Email Input */}
             <View style={styles.inputGroup}>
@@ -175,7 +194,7 @@ export default function LoginScreen() {
           {/* Sign Up */}
           <View style={styles.signUpRow}>
             <Text style={styles.signUpText}>Don't have an account? </Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push('/(auth)/register')}>
               <Text style={styles.signUpLink}>Sign up</Text>
             </TouchableOpacity>
           </View>
@@ -189,6 +208,8 @@ export default function LoginScreen() {
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: palette.darkBg },
+  errorBox: { backgroundColor: '#FEE2E2', borderRadius: radius.md, padding: spacing.sm },
+  errorText: { color: '#DC2626', fontSize: 13 },
   gradient: { ...StyleSheet.absoluteFillObject },
   kav: { flex: 1 },
 

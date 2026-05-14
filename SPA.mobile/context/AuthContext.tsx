@@ -1,0 +1,59 @@
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { authService, LoginDto, RegisterDto } from '@/services/auth.service';
+
+interface AuthState {
+  userId: string | null;
+  isLoggedIn: boolean;
+  loading: boolean;
+}
+
+interface AuthContextType extends AuthState {
+  login: (dto: LoginDto) => Promise<void>;
+  register: (dto: RegisterDto) => Promise<void>;
+  logout: () => Promise<void>;
+}
+
+const AuthContext = createContext<AuthContextType | null>(null);
+
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const [state, setState] = useState<AuthState>({
+    userId: null,
+    isLoggedIn: false,
+    loading: true,
+  });
+
+  // Check token on app start
+  useEffect(() => {
+    (async () => {
+      const loggedIn = await authService.isLoggedIn();
+      const userId = await authService.getUserId();
+      setState({ userId, isLoggedIn: loggedIn, loading: false });
+    })();
+  }, []);
+
+  const login = async (dto: LoginDto) => {
+    const data = await authService.login(dto);
+    setState({ userId: data.id, isLoggedIn: true, loading: false });
+  };
+
+  const register = async (dto: RegisterDto) => {
+    await authService.register(dto);
+  };
+
+  const logout = async () => {
+    await authService.logout();
+    setState({ userId: null, isLoggedIn: false, loading: false });
+  };
+
+  return (
+    <AuthContext.Provider value={{ ...state, login, register, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+export function useAuth(): AuthContextType {
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error('useAuth must be used inside AuthProvider');
+  return ctx;
+}

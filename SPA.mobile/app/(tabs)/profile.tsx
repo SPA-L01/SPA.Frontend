@@ -4,29 +4,23 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Image,
   ScrollView,
   SafeAreaView,
   StatusBar,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { palette, spacing, radius, typography, shadows } from '@/constants/theme';
-import { mockUser, mockSessions } from '@/constants/mockData';
 import { router } from 'expo-router';
-
-const MENU_ITEMS = [
-  { icon: 'wallet-outline' as const, label: 'My Wallet', chevron: true },
-  { icon: 'car-outline' as const, label: 'My Vehicles', chevron: true },
-  { icon: 'heart-outline' as const, label: 'Saved Spots', chevron: true },
-  { icon: 'card-outline' as const, label: 'Payment Methods', chevron: true },
-  { icon: 'notifications-outline' as const, label: 'Notifications', chevron: true },
-  { icon: 'shield-checkmark-outline' as const, label: 'Privacy & Security', chevron: true },
-  { icon: 'help-circle-outline' as const, label: 'Help & Support', chevron: true },
-  { icon: 'log-out-outline' as const, label: 'Sign Out', chevron: false, danger: true },
-];
+import { useAuth } from '@/context/AuthContext';
+import { useAppMode } from '@/context/AppModeContext';
 
 export default function ProfileScreen() {
-  const completedSessions = mockSessions.filter((s) => s.status === 'completed').length;
+  const { isLoggedIn, logout, userId } = useAuth();
+  const { isGuest } = useAppMode();
+
+  const handleLogout = async () => {
+    await logout();
+  };
 
   return (
     <View style={styles.root}>
@@ -36,91 +30,106 @@ export default function ProfileScreen() {
       <View style={styles.header}>
         <SafeAreaView>
           <View style={styles.headerInner}>
-            <Text style={styles.headerTitle}>Profile</Text>
-            <TouchableOpacity style={styles.editBtn}>
-              <Ionicons name="create-outline" size={20} color={palette.white} />
-            </TouchableOpacity>
+            <Text style={styles.headerTitle}>Cá nhân</Text>
           </View>
 
-          {/* Avatar & Name */}
+          {/* Avatar & Info */}
           <View style={styles.avatarSection}>
-            {mockUser.avatarUrl ? (
-              <Image source={{ uri: mockUser.avatarUrl }} style={styles.avatar} />
-            ) : (
-              <View style={[styles.avatar, styles.avatarPlaceholder]}>
-                <Ionicons name="person" size={40} color={palette.textMuted} />
-              </View>
-            )}
+            <View style={[styles.avatar, styles.avatarPlaceholder]}>
+              <Ionicons name="person" size={40} color={palette.textMuted} />
+            </View>
             <View style={styles.nameSection}>
-              <Text style={styles.userName}>{mockUser.name}</Text>
-              <Text style={styles.userEmail}>{mockUser.email}</Text>
-            </View>
-          </View>
-
-          {/* Stats */}
-          <View style={styles.statsRow}>
-            <View style={styles.statItem}>
-              <Text style={styles.statValue}>{mockUser.totalBookings}</Text>
-              <Text style={styles.statLabel}>Bookings</Text>
-            </View>
-            <View style={styles.statDivider} />
-            <View style={styles.statItem}>
-              <Text style={styles.statValue}>{mockUser.savedSpots}</Text>
-              <Text style={styles.statLabel}>Saved Spots</Text>
-            </View>
-            <View style={styles.statDivider} />
-            <View style={styles.statItem}>
-              <Text style={styles.statValue}>{completedSessions}</Text>
-              <Text style={styles.statLabel}>Completed</Text>
+              {isGuest ? (
+                <>
+                  <Text style={styles.userName}>Khách</Text>
+                  <Text style={styles.userEmail}>Chưa đăng nhập</Text>
+                </>
+              ) : (
+                <>
+                  <Text style={styles.userName}>Tài khoản của tôi</Text>
+                  <Text style={styles.userEmail} numberOfLines={1}>{userId}</Text>
+                </>
+              )}
             </View>
           </View>
         </SafeAreaView>
       </View>
 
-      {/* Menu */}
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.menuCard}>
-          {MENU_ITEMS.map((item, index) => (
-            <React.Fragment key={item.label}>
-              <TouchableOpacity
-                style={styles.menuItem}
-                activeOpacity={0.7}
-                onPress={() => {
-                  if (item.label === 'My Wallet' || item.label === 'Payment Methods') {
-                    router.push('/wallet');
-                  }
-                  if (item.label === 'Sign Out') {
-                    router.replace('/(auth)/login');
-                  }
-                }}
-              >
-                <View style={[styles.menuIconBg, item.danger && styles.menuIconBgDanger]}>
-                  <Ionicons
-                    name={item.icon}
-                    size={20}
-                    color={item.danger ? palette.danger : palette.textPrimary}
-                  />
-                </View>
-                <Text style={[styles.menuLabel, item.danger && styles.menuLabelDanger]}>
-                  {item.label}
-                </Text>
-                {item.chevron && (
-                  <Ionicons name="chevron-forward" size={18} color={palette.textSecondary} />
-                )}
-              </TouchableOpacity>
-              {index < MENU_ITEMS.length - 1 && <View style={styles.menuDivider} />}
-            </React.Fragment>
-          ))}
-        </View>
+        {/* Guest: Login & Register CTA */}
+        {isGuest && (
+          <View style={styles.authCard}>
+            <Ionicons name="cloud-upload-outline" size={32} color={palette.textSecondary} style={{ marginBottom: spacing.sm }} />
+            <Text style={styles.authCardTitle}>Đồng bộ dữ liệu</Text>
+            <Text style={styles.authCardSub}>
+              Đăng nhập để backup lịch sử gửi xe trên nhiều thiết bị.
+            </Text>
+            <TouchableOpacity
+              style={styles.loginBtn}
+              onPress={() => router.push('/(auth)/login')}
+              activeOpacity={0.85}
+            >
+              <Text style={styles.loginBtnText}>Đăng nhập</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.registerBtn}
+              onPress={() => router.push('/(auth)/register')}
+              activeOpacity={0.85}
+            >
+              <Text style={styles.registerBtnText}>Tạo tài khoản</Text>
+            </TouchableOpacity>
+          </View>
+        )}
 
-        <Text style={styles.version}>SPA Parking v1.0.0 · Member since {mockUser.memberSince}</Text>
+        {/* Authenticated: Menu */}
+        {!isGuest && (
+          <View style={styles.menuCard}>
+            <MenuItem
+              icon="sync-outline"
+              label="Đồng bộ dữ liệu"
+              onPress={() => {}}
+            />
+            <View style={styles.menuDivider} />
+            <MenuItem
+              icon="log-out-outline"
+              label="Đăng xuất"
+              danger
+              onPress={handleLogout}
+            />
+          </View>
+        )}
+
+        {/* App info */}
+        <Text style={styles.version}>Find My Car v1.0.0</Text>
         <View style={{ height: 100 }} />
       </ScrollView>
     </View>
+  );
+}
+
+function MenuItem({
+  icon,
+  label,
+  onPress,
+  danger,
+}: {
+  icon: keyof typeof Ionicons.glyphMap;
+  label: string;
+  onPress: () => void;
+  danger?: boolean;
+}) {
+  return (
+    <TouchableOpacity style={styles.menuItem} activeOpacity={0.7} onPress={onPress}>
+      <View style={[styles.menuIconBg, danger && styles.menuIconBgDanger]}>
+        <Ionicons name={icon} size={20} color={danger ? palette.danger : palette.textPrimary} />
+      </View>
+      <Text style={[styles.menuLabel, danger && styles.menuLabelDanger]}>{label}</Text>
+      {!danger && <Ionicons name="chevron-forward" size={18} color={palette.textSecondary} />}
+    </TouchableOpacity>
   );
 }
 
@@ -133,21 +142,10 @@ const styles = StyleSheet.create({
     paddingBottom: spacing.lg,
   },
   headerInner: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     marginTop: spacing.sm,
     marginBottom: spacing.lg,
   },
   headerTitle: { ...typography.h1, color: palette.white },
-  editBtn: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
-    backgroundColor: palette.darkBg2,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
 
   avatarSection: {
     flexDirection: 'row',
@@ -167,23 +165,48 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: palette.darkBg2,
   },
-  nameSection: { gap: 4 },
+  nameSection: { gap: 4, flex: 1 },
   userName: { ...typography.h2, color: palette.white },
   userEmail: { ...typography.caption, color: palette.textMuted },
 
-  statsRow: {
-    flexDirection: 'row',
-    backgroundColor: palette.darkBg2,
-    borderRadius: radius.lg,
-    padding: spacing.md,
-  },
-  statItem: { flex: 1, alignItems: 'center', gap: 4 },
-  statValue: { fontSize: 22, fontWeight: '800', color: palette.white },
-  statLabel: { ...typography.caption, color: palette.textMuted },
-  statDivider: { width: 1, backgroundColor: palette.borderDark },
-
   scroll: { flex: 1 },
   scrollContent: { padding: spacing.md },
+
+  authCard: {
+    backgroundColor: palette.white,
+    borderRadius: radius.xl,
+    padding: spacing.lg,
+    alignItems: 'center',
+    marginBottom: spacing.md,
+    ...shadows.sm,
+  },
+  authCardTitle: { ...typography.h3, color: palette.textPrimary, marginBottom: spacing.xs },
+  authCardSub: {
+    ...typography.body,
+    color: palette.textSecondary,
+    textAlign: 'center',
+    marginBottom: spacing.lg,
+  },
+  loginBtn: {
+    backgroundColor: palette.darkBg,
+    borderRadius: radius.full,
+    paddingVertical: 14,
+    paddingHorizontal: spacing.xl,
+    width: '100%',
+    alignItems: 'center',
+    marginBottom: spacing.sm,
+  },
+  loginBtnText: { ...typography.body, color: palette.white, fontWeight: '700' },
+  registerBtn: {
+    borderWidth: 1.5,
+    borderColor: palette.border,
+    borderRadius: radius.full,
+    paddingVertical: 14,
+    paddingHorizontal: spacing.xl,
+    width: '100%',
+    alignItems: 'center',
+  },
+  registerBtnText: { ...typography.body, color: palette.textPrimary, fontWeight: '600' },
 
   menuCard: {
     backgroundColor: palette.white,

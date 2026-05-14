@@ -17,7 +17,7 @@ const { width, height } = Dimensions.get('window');
 
 export default function OnboardingScreen() {
   const handleGetStarted = () => {
-    router.replace('/(auth)/login');
+    router.replace('/(tabs)');
   };
 
   return (

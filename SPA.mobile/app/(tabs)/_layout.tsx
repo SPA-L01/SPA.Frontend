@@ -1,6 +1,6 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { palette } from '@/constants/theme';
 
@@ -23,6 +23,7 @@ export default function TabLayout() {
         tabBarLabelStyle: styles.tabLabel,
       }}
     >
+      {/* Tab 1: Home — tìm kiếm bãi đỗ xe */}
       <Tabs.Screen
         name="index"
         options={{
@@ -32,15 +33,19 @@ export default function TabLayout() {
           ),
         }}
       />
+
+      {/* Tab 2: History — lịch sử & ghi nhớ chỗ gửi xe (thay sessions) */}
       <Tabs.Screen
-        name="sessions"
+        name="history"
         options={{
-          title: 'Sessions',
+          title: 'History',
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? 'star' : 'star-outline'} size={24} color={color} />
+            <Ionicons name={focused ? 'time' : 'time-outline'} size={24} color={color} />
           ),
         }}
       />
+
+      {/* Tab 3: Map — nút scan/lưu vị trí giữa */}
       <Tabs.Screen
         name="map"
         options={{
@@ -49,6 +54,8 @@ export default function TabLayout() {
           tabBarIcon: () => <ScanButton />,
         }}
       />
+
+      {/* Tab 4: Explore */}
       <Tabs.Screen
         name="explore"
         options={{
@@ -58,6 +65,8 @@ export default function TabLayout() {
           ),
         }}
       />
+
+      {/* Tab 5: Profile */}
       <Tabs.Screen
         name="profile"
         options={{
@@ -67,6 +76,9 @@ export default function TabLayout() {
           ),
         }}
       />
+
+      {/* Ẩn sessions cũ — đã thay bằng history */}
+      <Tabs.Screen name="sessions" options={{ href: null }} />
     </Tabs>
   );
 }

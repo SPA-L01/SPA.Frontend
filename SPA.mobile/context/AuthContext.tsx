@@ -22,12 +22,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     loading: true,
   });
 
-  // Check token on app start
+  // Check token on app start, but never block guest mode if storage fails.
   useEffect(() => {
     (async () => {
-      const loggedIn = await authService.isLoggedIn();
-      const userId = await authService.getUserId();
-      setState({ userId, isLoggedIn: loggedIn, loading: false });
+      try {
+        const loggedIn = await authService.isLoggedIn();
+        const userId = await authService.getUserId();
+        setState({ userId, isLoggedIn: loggedIn, loading: false });
+      } catch {
+        setState({ userId: null, isLoggedIn: false, loading: false });
+      }
     })();
   }, []);
 

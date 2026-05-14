@@ -7,6 +7,8 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { AuthProvider } from '@/context/AuthContext';
 import { AppModeProvider } from '@/context/AppModeContext';
+import { WalletProvider } from '@/context/WalletContext';
+import { BookingProvider } from '@/context/BookingContext';
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -33,9 +35,14 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <AuthProvider>
         <AppModeProvider>
-          <RootNavigator />
+          <WalletProvider>
+            <BookingProvider>
+              <RootNavigator />
+            </BookingProvider>
+          </WalletProvider>
         </AppModeProvider>
       </AuthProvider>
     </GestureHandlerRootView>
   );
 }
+

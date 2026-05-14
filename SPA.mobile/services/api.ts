@@ -51,9 +51,9 @@ export const parkingService = {
     const response = await api.get('/parking-locations', { params: query });
     return response.data;
   },
-  getNearbyLocations: async (lat: number, lng: number, radius?: number) => {
+  getNearbyLocations: async (lat: number, lng: number, radiusKm?: number) => {
     const response = await api.get('/parking-locations/nearby', {
-      params: { lat, lng, radius },
+      params: { lat, lng, radiusKm },
     });
     return response.data;
   },

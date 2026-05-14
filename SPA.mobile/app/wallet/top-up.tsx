@@ -14,6 +14,7 @@ import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { palette, spacing, radius, typography, shadows } from '@/constants/theme';
 import { mockPaymentMethods, PaymentMethod } from '@/constants/mockData';
+import { useWallet } from '@/context/WalletContext';
 
 const TOP_UP_AMOUNTS = [50000, 100000, 200000, 500000, 1000000, 2000000];
 
@@ -22,12 +23,14 @@ export default function TopUpScreen() {
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>(mockPaymentMethods[1]); // Default to Visa
   const [loading, setLoading] = useState(false);
 
-  const handleTopUp = () => {
+  const { topup } = useWallet();
+
+  const handleTopUp = async () => {
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      router.back();
-    }, 1500);
+    await new Promise((r) => setTimeout(r, 1000));
+    await topup(parseInt(amount || '0', 10), selectedMethod.label);
+    setLoading(false);
+    router.replace('/wallet');
   };
 
   return (

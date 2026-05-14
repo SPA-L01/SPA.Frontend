@@ -4,15 +4,29 @@ export interface ParkingLot {
   id: string;
   name: string;
   address: string;
-  price: number;
-  freeSlots: number;
-  totalSlots: number;
-  distance: number;
-  rating: number;
-  imageUrl: string;
-  coordinate: { latitude: number; longitude: number };
-  openHours: string;
-  floors: string[];
+  // Mock data fields
+  price?: number;
+  freeSlots?: number;
+  distance?: number;
+  rating?: number;
+  openHours?: string;
+  coordinate?: { latitude: number; longitude: number };
+  floors?: string[];
+  // Backend data fields
+  hourlyRate?: number;
+  dailyRate?: number;
+  monthlyRate?: number;
+  availableSlots?: number;
+  totalSlots?: number;
+  latitude?: number;
+  longitude?: number;
+  imageUrl?: string;
+  is24h?: boolean;
+  openTime?: string;
+  closeTime?: string;
+  status?: string;
+  description?: string;
+  slug?: string;
 }
 
 export interface ParkingSlot {

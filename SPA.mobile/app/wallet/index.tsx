@@ -14,6 +14,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { palette, spacing, radius, typography, shadows } from '@/constants/theme';
 import { mockUser, mockTransactions, Transaction } from '@/constants/mockData';
+import { useWallet } from '@/context/WalletContext';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -47,6 +48,9 @@ function TransactionItem({ item }: { item: Transaction }) {
 }
 
 export default function WalletScreen() {
+  const { balance, transactions } = useWallet();
+  const displayTransactions = transactions.length > 0 ? transactions : mockTransactions;
+
   return (
     <View style={styles.root}>
       <StatusBar barStyle="light-content" backgroundColor={palette.darkBg} />
@@ -81,7 +85,7 @@ export default function WalletScreen() {
           <View style={styles.cardTop}>
             <View>
               <Text style={styles.balanceLabel}>Số dư khả dụng</Text>
-              <Text style={styles.balanceValue}>{mockUser.balance.toLocaleString()}đ</Text>
+              <Text style={styles.balanceValue}>{balance.toLocaleString()}đ</Text>
             </View>
             <View style={styles.logoBadge}>
               <Text style={styles.logoBadgeText}>SPA</Text>
@@ -148,10 +152,10 @@ export default function WalletScreen() {
         </View>
 
         <View style={styles.transactionCard}>
-          {mockTransactions.map((t, i) => (
+          {displayTransactions.map((t, i) => (
             <React.Fragment key={t.id}>
-              <TransactionItem item={t} />
-              {i < mockTransactions.length - 1 && <View style={styles.divider} />}
+              <TransactionItem item={t as Transaction} />
+              {i < displayTransactions.length - 1 && <View style={styles.divider} />}
             </React.Fragment>
           ))}
         </View>

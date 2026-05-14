@@ -10,25 +10,30 @@ interface ParkingCardProps {
 }
 
 export function ParkingCard({ lot, variant = 'default' }: ParkingCardProps) {
+  const imageUrl = lot.imageUrl || 'https://picsum.photos/seed/spa-parking/400/240';
+  const price = lot.price ?? Number(lot.hourlyRate ?? 0);
+  const freeSlots = lot.freeSlots ?? lot.availableSlots ?? 0;
+  const distance = typeof lot.distance === 'number' ? lot.distance : null;
+
   return (
     <TouchableOpacity
       style={[styles.card, variant === 'compact' && styles.cardCompact]}
       activeOpacity={0.75}
       onPress={() => router.push(`/parking/${lot.id}`)}
     >
-      <Image source={{ uri: lot.imageUrl }} style={styles.image} />
+      <Image source={{ uri: imageUrl }} style={styles.image} />
       <View style={styles.content}>
         <Text style={styles.name} numberOfLines={1}>{lot.name}</Text>
         <Text style={styles.address} numberOfLines={1}>{lot.address}</Text>
         <View style={styles.footer}>
           <Text style={styles.price}>
-            <Text style={styles.priceBold}>${lot.price}</Text>
-            {' '}/ {lot.freeSlots} free
+            <Text style={styles.priceBold}>{Number(price).toLocaleString()}đ</Text>
+            {' '}/ {freeSlots} free
           </Text>
         </View>
       </View>
       <View style={styles.distanceBadge}>
-        <Text style={styles.distanceText}>{lot.distance.toFixed(1)} km</Text>
+        <Text style={styles.distanceText}>{distance !== null ? `${distance.toFixed(1)} km` : '— km'}</Text>
       </View>
     </TouchableOpacity>
   );

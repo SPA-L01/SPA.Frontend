@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "SPA.mobile",
+    "name": "SPA Parking",
     "slug": "SPAmobile",
     "version": "1.0.0",
     "runtimeVersion": {
@@ -17,13 +17,13 @@
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "NSLocationWhenInUseUsageDescription": "SPA dùng vị trí của bạn để hiển thị bạn đang ở đâu và tìm bãi đỗ xe gần nhất."
+        "NSLocationWhenInUseUsageDescription": "SPA Parking sử dụng vị trí của bạn để tìm kiếm các bãi đỗ xe gần nhất và hỗ trợ chỉ đường."
       }
     },
     "android": {
       "permissions": ["ACCESS_COARSE_LOCATION", "ACCESS_FINE_LOCATION"],
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#0D0D0F",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
@@ -44,7 +44,7 @@
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff",
+          "backgroundColor": "#0D0D0F",
           "dark": {
             "backgroundColor": "#000000"
           }

@@ -9,6 +9,8 @@ import { palette, spacing, typography, radius, shadows } from '@/constants/theme
 import { useBookings } from '@/context/BookingContext';
 import { useParkingSpot } from '@/context/ParkingSpotContext';
 import { ParkingSpot } from '@/types/parking-spot';
+import { Skeleton } from '@/components/ui/Skeleton';
+
 
 function formatDate(iso: string) {
   const d = new Date(iso);
@@ -91,10 +93,30 @@ function SpotHistoryCard({ spot }: { spot: ParkingSpot }) {
 }
 
 export default function HistoryScreen() {
-  const { bookings } = useBookings();
-  const { currentSpot, history } = useParkingSpot();
+  const { bookings, loading: loadingBookings } = useBookings();
+  const { currentSpot, history, loading: loadingSpots } = useParkingSpot();
 
+  const loading = loadingBookings || loadingSpots;
   const hasContent = currentSpot || history.length > 0 || bookings.length > 0;
+
+  if (loading && !hasContent) {
+    return (
+      <View style={styles.root}>
+        <StatusBar barStyle="light-content" backgroundColor={palette.darkBg} />
+        <View style={styles.header}>
+          <SafeAreaView>
+            <Text style={styles.headerTitle}>Lịch sử & Vị trí xe</Text>
+            <Text style={styles.headerSub}>Đang tải dữ liệu...</Text>
+          </SafeAreaView>
+        </View>
+        <ScrollView contentContainerStyle={styles.listContent}>
+          {[1, 2, 3].map(i => (
+            <Skeleton key={i} height={100} style={{ marginBottom: spacing.md, borderRadius: radius.xl }} />
+          ))}
+        </ScrollView>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.root}>
@@ -109,11 +131,18 @@ export default function HistoryScreen() {
 
       {!hasContent ? (
         <View style={styles.emptyContainer}>
-          <Ionicons name="car-outline" size={64} color={palette.textSecondary} />
-          <Text style={styles.emptyTitle}>Chưa có dữ liệu</Text>
-          <Text style={styles.emptySubtitle}>Gửi xe và lưu vị trí để xem ở đây.</Text>
-          <TouchableOpacity style={styles.saveNowBtn} onPress={() => router.push('/spot/save')}>
-            <Text style={styles.saveNowBtnText}>📍  Lưu vị trí xe ngay</Text>
+          <View style={styles.emptyIconCircle}>
+            <Ionicons name="car-sport-outline" size={64} color="#CBD5E1" />
+          </View>
+          <Text style={styles.emptyTitle}>Lịch sử trống</Text>
+          <Text style={styles.emptySubtitle}>
+            Bạn chưa có dữ liệu gửi xe nào. Hãy bắt đầu bằng cách tìm một bãi đỗ gần nhất!
+          </Text>
+          <TouchableOpacity 
+            style={styles.exploreBtn} 
+            onPress={() => router.push('/(tabs)/map')}
+          >
+            <Text style={styles.exploreBtnText}>🔍  Tìm bãi đỗ ngay</Text>
           </TouchableOpacity>
         </View>
       ) : (
@@ -245,4 +274,28 @@ const styles = StyleSheet.create({
   statusBadge: { backgroundColor: '#D1FAE5', paddingHorizontal: 8, paddingVertical: 3, borderRadius: radius.full },
   statusDone: { backgroundColor: palette.offWhite },
   statusText: { fontSize: 10, fontWeight: '800', color: '#065F46' },
+
+  // New styles for Phase 8 polish
+  emptyIconCircle: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: '#F1F5F9',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: spacing.md,
+  },
+  exploreBtn: {
+    backgroundColor: palette.darkBg,
+    paddingHorizontal: 32,
+    paddingVertical: 16,
+    borderRadius: radius.full,
+    marginTop: spacing.lg,
+    ...shadows.md,
+  },
+  exploreBtnText: {
+    color: palette.white,
+    fontWeight: '800',
+    fontSize: 16,
+  },
 });

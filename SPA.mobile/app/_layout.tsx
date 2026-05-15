@@ -11,6 +11,7 @@ import { WalletProvider } from '@/context/WalletContext';
 import { BookingProvider } from '@/context/BookingContext';
 import { ParkingSpotProvider } from '@/context/ParkingSpotContext';
 import { FavouritesProvider } from '@/context/FavouritesContext';
+import { ToastProvider } from '@/context/ToastContext';
 import { notificationService } from '@/services/notification.service';
 import { useEffect } from 'react';
 
@@ -34,6 +35,8 @@ function RootNavigator() {
   );
 }
 
+import { ErrorBoundary } from '@/components/ErrorBoundary';
+
 export default function RootLayout() {
   useEffect(() => {
     notificationService.registerForPushNotificationsAsync();
@@ -41,19 +44,23 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <AuthProvider>
-        <AppModeProvider>
-          <WalletProvider>
-            <BookingProvider>
-              <ParkingSpotProvider>
-                <FavouritesProvider>
-                  <RootNavigator />
-                </FavouritesProvider>
-              </ParkingSpotProvider>
-            </BookingProvider>
-          </WalletProvider>
-        </AppModeProvider>
-      </AuthProvider>
+      <ErrorBoundary>
+        <AuthProvider>
+          <AppModeProvider>
+            <ToastProvider>
+              <WalletProvider>
+                <BookingProvider>
+                  <ParkingSpotProvider>
+                    <FavouritesProvider>
+                      <RootNavigator />
+                    </FavouritesProvider>
+                  </ParkingSpotProvider>
+                </BookingProvider>
+              </WalletProvider>
+            </ToastProvider>
+          </AppModeProvider>
+        </AuthProvider>
+      </ErrorBoundary>
     </GestureHandlerRootView>
   );
 }

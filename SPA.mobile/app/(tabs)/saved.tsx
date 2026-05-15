@@ -1,12 +1,13 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, SafeAreaView, StatusBar, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, SafeAreaView, StatusBar } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { palette, spacing, typography } from '@/constants/theme';
+import { palette, spacing, typography, radius } from '@/constants/theme';
 import { useFavourites } from '@/context/FavouritesContext';
 import { ParkingCard } from '@/components/ui/ParkingCard';
+import { Skeleton } from '@/components/ui/Skeleton';
 
 export default function SavedScreen() {
-  const { favouriteLots, loading, refresh } = useFavourites();
+  const { favouriteLots, loading } = useFavourites();
 
   return (
     <View style={styles.root}>
@@ -14,41 +15,41 @@ export default function SavedScreen() {
       
       <View style={styles.header}>
         <SafeAreaView>
-          <Text style={styles.headerTitle}>Saved Places</Text>
-          <Text style={styles.headerSub}>{favouriteLots.length} locations saved</Text>
+          <Text style={styles.headerTitle}>Yêu thích</Text>
+          <Text style={styles.headerSub}>{favouriteLots.length} địa điểm đã lưu</Text>
         </SafeAreaView>
       </View>
 
-      {loading ? (
-        <View style={styles.centered}>
-          <ActivityIndicator size="large" color={palette.textSecondary} />
-        </View>
-      ) : (
-        <ScrollView 
-          style={styles.scroll} 
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
-        >
-          {favouriteLots.length === 0 ? (
-            <View style={styles.emptyState}>
-              <View style={styles.emptyIconBg}>
-                <Ionicons name="heart-outline" size={48} color={palette.textSecondary} />
-              </View>
-              <Text style={styles.emptyTitle}>No saved places yet</Text>
-              <Text style={styles.emptyText}>
-                Tap the heart icon on any parking lot to save it here for quick access.
-              </Text>
+      <ScrollView 
+        style={styles.scroll} 
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        {loading && favouriteLots.length === 0 ? (
+          <View style={styles.list}>
+            {[1, 2, 3].map(i => (
+              <Skeleton key={i} height={120} style={{ marginBottom: spacing.md, borderRadius: radius.xl }} />
+            ))}
+          </View>
+        ) : favouriteLots.length === 0 ? (
+          <View style={styles.emptyState}>
+            <View style={styles.emptyIconCircle}>
+              <Ionicons name="heart-outline" size={64} color="#CBD5E1" />
             </View>
-          ) : (
-            <View style={styles.list}>
-              {favouriteLots.map((lot) => (
-                <ParkingCard key={lot.id} lot={lot} />
-              ))}
-            </View>
-          )}
-          <View style={{ height: 100 }} />
-        </ScrollView>
-      )}
+            <Text style={styles.emptyTitle}>Chưa có yêu thích</Text>
+            <Text style={styles.emptyText}>
+              Nhấn vào biểu tượng trái tim ở bất kỳ bãi đỗ nào để lưu lại đây.
+            </Text>
+          </View>
+        ) : (
+          <View style={styles.list}>
+            {favouriteLots.map((lot) => (
+              <ParkingCard key={lot.id} lot={lot} />
+            ))}
+          </View>
+        )}
+        <View style={{ height: 100 }} />
+      </ScrollView>
     </View>
   );
 }
@@ -93,11 +94,11 @@ const styles = StyleSheet.create({
     paddingVertical: 80,
     paddingHorizontal: 40,
   },
-  emptyIconBg: {
+  emptyIconCircle: {
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: palette.white,
+    backgroundColor: '#F1F5F9',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: spacing.lg,

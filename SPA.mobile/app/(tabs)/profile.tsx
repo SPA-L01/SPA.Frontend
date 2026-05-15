@@ -15,11 +15,33 @@ import { router, useFocusEffect } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
 import { useAppMode } from '@/context/AppModeContext';
 import { userService } from '@/services/api';
+import { syncService } from '@/services/sync.service';
+
 
 export default function ProfileScreen() {
   const { isLoggedIn, logout, userId } = useAuth();
   const { isGuest } = useAppMode();
   const [profile, setProfile] = useState<any>(null);
+  const [syncTime, setSyncTime] = useState<string | null>(null);
+  const [syncing, setSyncing] = useState(false);
+
+  const loadSyncStatus = async () => {
+    const time = await syncService.getLastSyncedAt();
+    setSyncTime(time);
+  };
+
+  const handleSync = async () => {
+    setSyncing(true);
+    try {
+      await syncService.pushLocalToCloud();
+      await syncService.pullFromCloud();
+      await loadSyncStatus();
+    } catch (e) {
+      console.error('Sync failed:', e);
+    } finally {
+      setSyncing(false);
+    }
+  };
 
   const loadProfile = async () => {
     if (isGuest) return;
@@ -31,6 +53,7 @@ export default function ProfileScreen() {
 
   useFocusEffect(React.useCallback(() => {
     loadProfile();
+    loadSyncStatus();
   }, [isGuest]));
 
   const handleLogout = async () => {
@@ -116,27 +139,6 @@ export default function ProfileScreen() {
           </View>
         )}
 
-  const [syncTime, setSyncTime] = useState<string | null>(null);
-  const [syncing, setSyncing] = useState(false);
-
-  const loadSyncStatus = async () => {
-    const time = await syncService.getLastSyncedAt();
-    setSyncTime(time);
-  };
-
-  useEffect(() => {
-    loadSyncStatus();
-  }, []);
-
-  const handleSync = async () => {
-    setSyncing(true);
-    await syncService.pushLocalToCloud();
-    await syncService.pullFromCloud();
-    await loadSyncStatus();
-    setSyncing(false);
-  };
-
-  // ... (inside the menu section)
         {/* Authenticated: Menu */}
         {!isGuest && (
           <View style={styles.menuCard}>

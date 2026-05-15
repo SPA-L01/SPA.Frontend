@@ -282,33 +282,47 @@ export default function ParkingDetailScreen() {
       )}
 
       {/* ── Footer ── */}
-      <View style={styles.footer}>
-        <View style={styles.priceSection}>
-          <Text style={styles.priceLabel}>Tổng thanh toán</Text>
-          <Text style={styles.priceValue}>
-            {totalPrice.toLocaleString()}đ{' '}
-            <Text style={styles.priceSub}>/ {hours} giờ</Text>
-          </Text>
-        </View>
+      <View style={styles.footerCol}>
         <TouchableOpacity
-          style={[styles.bookBtn, !selectedSlot && styles.bookBtnDisabled]}
-          activeOpacity={0.85}
-          disabled={!selectedSlot}
-          onPress={() => {
+          style={styles.savedHereBtn}
+          onPress={() =>
             router.push({
-              pathname: '/payment/checkout',
-              params: {
-                lotId: lot?.id ?? id,
-                slotCode: selectedSlot?.slotNumber,
-                price: totalPrice.toString(),
-              },
-            });
-          }}
+              pathname: '/spot/save',
+              params: { parkingLocationId: lot?.id ?? id, parkingLocationName: lotName },
+            })
+          }
         >
-          <Text style={styles.bookBtnText}>
-            {selectedSlot ? 'Đặt chỗ ngay' : 'Chọn chỗ đỗ'}
-          </Text>
+          <Ionicons name="location-outline" size={16} color="#059669" />
+          <Text style={styles.savedHereBtnText}>Tôi đã gửi xe ở đây</Text>
         </TouchableOpacity>
+        <View style={styles.footer}>
+          <View style={styles.priceSection}>
+            <Text style={styles.priceLabel}>Tổng thanh toán</Text>
+            <Text style={styles.priceValue}>
+              {totalPrice.toLocaleString()}đ{' '}
+              <Text style={styles.priceSub}>/ {hours} giờ</Text>
+            </Text>
+          </View>
+          <TouchableOpacity
+            style={[styles.bookBtn, !selectedSlot && styles.bookBtnDisabled]}
+            activeOpacity={0.85}
+            disabled={!selectedSlot}
+            onPress={() => {
+              router.push({
+                pathname: '/payment/checkout',
+                params: {
+                  lotId: lot?.id ?? id,
+                  slotCode: selectedSlot?.slotNumber,
+                  price: totalPrice.toString(),
+                },
+              });
+            }}
+          >
+            <Text style={styles.bookBtnText}>
+              {selectedSlot ? 'Đặt chỗ ngay' : 'Chọn chỗ đỗ'}
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* ── Time Modal ── */}
@@ -545,6 +559,12 @@ const styles = StyleSheet.create({
   carWheel: { width: 8, height: 8, borderRadius: 4, backgroundColor: '#3A3A3C' },
 
   // ── Footer
+  footerCol: { backgroundColor: palette.white, borderTopWidth: 1, borderTopColor: palette.border, ...shadows.md },
+  savedHereBtn: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6,
+    paddingVertical: 10, backgroundColor: '#D1FAE5',
+  },
+  savedHereBtnText: { fontSize: 13, fontWeight: '700', color: '#059669' },
   footer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -552,9 +572,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.md,
     backgroundColor: palette.white,
-    ...shadows.md,
-    borderTopWidth: 1,
-    borderTopColor: palette.border,
   },
   priceSection: { gap: 2 },
   priceLabel: { ...typography.caption, color: palette.textSecondary },

@@ -9,6 +9,7 @@ import { AuthProvider } from '@/context/AuthContext';
 import { AppModeProvider } from '@/context/AppModeContext';
 import { WalletProvider } from '@/context/WalletContext';
 import { BookingProvider } from '@/context/BookingContext';
+import { ParkingSpotProvider } from '@/context/ParkingSpotContext';
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -37,7 +38,9 @@ export default function RootLayout() {
         <AppModeProvider>
           <WalletProvider>
             <BookingProvider>
-              <RootNavigator />
+              <ParkingSpotProvider>
+                <RootNavigator />
+              </ParkingSpotProvider>
             </BookingProvider>
           </WalletProvider>
         </AppModeProvider>

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, StatusBar, TouchableOpacity, TextInput, ScrollView, Alert } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet, SafeAreaView, StatusBar, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { palette, spacing, typography, radius, shadows } from '@/constants/theme';
@@ -7,38 +7,18 @@ import { useBookings } from '@/context/BookingContext';
 
 export default function BookingDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { getBooking, saveCarSpot, completeBooking } = useBookings();
+  const { getBooking, completeBooking } = useBookings();
   const booking = getBooking(id);
-
-  const [floor, setFloor] = useState(booking?.savedSpot?.floor ?? '');
-  const [zone, setZone] = useState(booking?.savedSpot?.zone ?? '');
-  const [column, setColumn] = useState(booking?.savedSpot?.column ?? '');
-  const [note, setNote] = useState(booking?.savedSpot?.note ?? '');
-  const [saving, setSaving] = useState(false);
 
   if (!booking) {
     return (
       <View style={styles.root}>
-        <SafeAreaView style={styles.header}><Text style={styles.headerTitle}>Không tìm thấy</Text></SafeAreaView>
+        <SafeAreaView style={styles.header}>
+          <Text style={styles.headerTitle}>Không tìm thấy</Text>
+        </SafeAreaView>
       </View>
     );
   }
-
-  const handleSave = async () => {
-    if (!floor.trim() && !zone.trim() && !column.trim() && !note.trim()) {
-      Alert.alert('Thiếu thông tin', 'Hãy nhập ít nhất tầng, khu, cột hoặc ghi chú.');
-      return;
-    }
-    setSaving(true);
-    await saveCarSpot(booking.id, {
-      floor: floor.trim(),
-      zone: zone.trim(),
-      column: column.trim(),
-      note: note.trim(),
-    });
-    setSaving(false);
-    Alert.alert('Đã lưu vị trí xe', 'Bạn có thể xem lại trong Lịch sử đặt xe.');
-  };
 
   const handleComplete = async () => {
     Alert.alert('Đã lấy xe?', 'Booking này sẽ chuyển sang trạng thái đã lấy xe.', [
@@ -68,14 +48,16 @@ export default function BookingDetailScreen() {
               <Ionicons name="chevron-back" size={24} color={palette.white} />
             </TouchableOpacity>
             <View style={{ flex: 1 }}>
-              <Text style={styles.headerTitle}>Chi tiết đặt xe</Text>
-              <Text style={styles.headerSub}>Lưu vị trí xe tại bãi này</Text>
+              <Text style={styles.headerTitle}>Chi tiết đặt chỗ</Text>
+              <Text style={styles.headerSub}>Thông tin lần gửi xe này</Text>
             </View>
           </View>
         </SafeAreaView>
       </View>
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+
+        {/* Booking info */}
         <View style={styles.bookingCard}>
           <View style={styles.cardHeader}>
             <View style={styles.parkingIcon}>
@@ -86,7 +68,6 @@ export default function BookingDetailScreen() {
               <Text style={styles.address}>{booking.lotAddress}</Text>
             </View>
           </View>
-
           <View style={styles.infoGrid}>
             <Info label="Slot đặt" value={booking.slotCode} />
             <Info label="Thanh toán" value={`${booking.total.toLocaleString()}đ`} />
@@ -94,6 +75,7 @@ export default function BookingDetailScreen() {
           </View>
         </View>
 
+        {/* Saved spot (if exists) */}
         {booking.savedSpot && (
           <View style={styles.savedCard}>
             <View style={styles.savedIcon}>
@@ -107,32 +89,19 @@ export default function BookingDetailScreen() {
           </View>
         )}
 
-        <View style={styles.formCard}>
-          <Text style={styles.sectionTitle}>Lưu vị trí xe</Text>
-          <Text style={styles.sectionSub}>Nhập vị trí thực tế để lát quay lại tìm xe nhanh hơn.</Text>
-
-          <Input label="Tầng" placeholder="VD: Hầm B2" value={floor} onChangeText={setFloor} icon="layers-outline" />
-          <Input label="Khu" placeholder="VD: Khu C" value={zone} onChangeText={setZone} icon="grid-outline" />
-          <Input label="Số cột" placeholder="VD: Cột C12" value={column} onChangeText={setColumn} icon="pin-outline" />
-
-          <Text style={styles.inputLabel}>Ghi chú</Text>
-          <View style={[styles.inputWrap, styles.noteWrap]}>
-            <Ionicons name="document-text-outline" size={18} color={palette.textSecondary} />
-            <TextInput
-              value={note}
-              onChangeText={setNote}
-              placeholder="VD: gần thang máy, bên phải lối ra..."
-              placeholderTextColor={palette.textSecondary}
-              style={[styles.input, styles.noteInput]}
-              multiline
-            />
-          </View>
-
-          <TouchableOpacity style={styles.saveBtn} onPress={handleSave} disabled={saving}>
-            <Ionicons name="save-outline" size={18} color={palette.white} />
-            <Text style={styles.saveBtnText}>{saving ? 'Đang lưu...' : 'Lưu vị trí xe'}</Text>
-          </TouchableOpacity>
-        </View>
+        {/* Single CTA */}
+        <TouchableOpacity
+          style={styles.newSpotBtn}
+          onPress={() =>
+            router.push({
+              pathname: '/spot/save',
+              params: { parkingLocationId: booking.lotId ?? booking.id, parkingLocationName: booking.lotName },
+            })
+          }
+        >
+          <Ionicons name="location-outline" size={20} color={palette.white} />
+          <Text style={styles.newSpotBtnText}>📍  Lưu vị trí xe (GPS + ảnh)</Text>
+        </TouchableOpacity>
 
         <TouchableOpacity style={styles.mapBtn} activeOpacity={0.85}>
           <Ionicons name="navigate-outline" size={20} color={palette.textPrimary} />
@@ -161,18 +130,6 @@ function Info({ label, value }: { label: string; value: string }) {
   );
 }
 
-function Input({ label, icon, ...props }: { label: string; icon: any; placeholder: string; value: string; onChangeText: (t: string) => void }) {
-  return (
-    <>
-      <Text style={styles.inputLabel}>{label}</Text>
-      <View style={styles.inputWrap}>
-        <Ionicons name={icon} size={18} color={palette.textSecondary} />
-        <TextInput {...props} placeholderTextColor={palette.textSecondary} style={styles.input} />
-      </View>
-    </>
-  );
-}
-
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: palette.offWhite },
   header: { backgroundColor: palette.darkBg, paddingHorizontal: spacing.md, paddingBottom: spacing.lg },
@@ -195,16 +152,8 @@ const styles = StyleSheet.create({
   savedTitle: { fontSize: 15, fontWeight: '800', color: '#065F46' },
   savedText: { fontSize: 14, color: '#047857', marginTop: 2, fontWeight: '700' },
   savedNote: { fontSize: 12, color: '#059669', marginTop: 4 },
-  formCard: { backgroundColor: palette.white, borderRadius: radius.xl, padding: spacing.md, ...shadows.sm },
-  sectionTitle: { ...typography.h2, color: palette.textPrimary },
-  sectionSub: { ...typography.caption, color: palette.textSecondary, marginTop: 4, marginBottom: spacing.md },
-  inputLabel: { fontSize: 12, fontWeight: '800', color: palette.textSecondary, marginBottom: 6, marginTop: spacing.sm },
-  inputWrap: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, backgroundColor: palette.offWhite, borderRadius: radius.md, borderWidth: 1, borderColor: palette.border, paddingHorizontal: spacing.md, minHeight: 46 },
-  input: { flex: 1, color: palette.textPrimary, fontSize: 15, paddingVertical: 10 },
-  noteWrap: { alignItems: 'flex-start', paddingTop: 12, minHeight: 90 },
-  noteInput: { minHeight: 70, textAlignVertical: 'top' },
-  saveBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: palette.darkBg, borderRadius: radius.full, paddingVertical: 15, marginTop: spacing.md, ...shadows.md },
-  saveBtnText: { color: palette.white, fontSize: 15, fontWeight: '800' },
+  newSpotBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: '#059669', borderRadius: radius.full, paddingVertical: 16, ...shadows.md },
+  newSpotBtnText: { color: palette.white, fontSize: 15, fontWeight: '800' },
   mapBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: palette.white, borderRadius: radius.full, paddingVertical: 15, borderWidth: 1, borderColor: palette.border },
   mapBtnText: { color: palette.textPrimary, fontSize: 14, fontWeight: '800' },
   completeBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: '#111827', borderRadius: radius.full, paddingVertical: 16, ...shadows.md },

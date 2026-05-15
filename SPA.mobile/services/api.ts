@@ -150,3 +150,22 @@ export const favouritesService = {
 
 
 
+
+export const savedParkingService = {
+  getSavedSpots: async () => {
+    const response = await api.get('/saved-parking');
+    return response.data;
+  },
+  syncSpots: async (spots: any[]) => {
+    const response = await api.post('/saved-parking/sync', { spots });
+    return response.data;
+  },
+  updateSpot: async (id: string, data: any) => {
+    const response = await api.patch(`/saved-parking/${id}`, data);
+    return response.data;
+  },
+  completeSpot: async (id: string, durationMs?: number) => {
+    const response = await api.post(`/saved-parking/${id}/complete`, { durationMs });
+    return response.data;
+  },
+};

@@ -116,13 +116,36 @@ export default function ProfileScreen() {
           </View>
         )}
 
+  const [syncTime, setSyncTime] = useState<string | null>(null);
+  const [syncing, setSyncing] = useState(false);
+
+  const loadSyncStatus = async () => {
+    const time = await syncService.getLastSyncedAt();
+    setSyncTime(time);
+  };
+
+  useEffect(() => {
+    loadSyncStatus();
+  }, []);
+
+  const handleSync = async () => {
+    setSyncing(true);
+    await syncService.pushLocalToCloud();
+    await syncService.pullFromCloud();
+    await loadSyncStatus();
+    setSyncing(false);
+  };
+
+  // ... (inside the menu section)
         {/* Authenticated: Menu */}
         {!isGuest && (
           <View style={styles.menuCard}>
             <MenuItem
-              icon="sync-outline"
-              label="Đồng bộ dữ liệu"
-              onPress={() => {}}
+              icon={syncing ? "refresh-circle" : "sync-outline"}
+              label={syncing ? "Đang đồng bộ..." : "Đồng bộ dữ liệu"}
+              subLabel={syncTime ? `Lần cuối: ${new Date(syncTime).toLocaleString('vi-VN')}` : "Chưa đồng bộ"}
+              onPress={handleSync}
+              disabled={syncing}
             />
             <View style={styles.menuDivider} />
             <MenuItem
@@ -145,20 +168,32 @@ export default function ProfileScreen() {
 function MenuItem({
   icon,
   label,
+  subLabel,
   onPress,
   danger,
+  disabled,
 }: {
   icon: keyof typeof Ionicons.glyphMap;
   label: string;
+  subLabel?: string;
   onPress: () => void;
   danger?: boolean;
+  disabled?: boolean;
 }) {
   return (
-    <TouchableOpacity style={styles.menuItem} activeOpacity={0.7} onPress={onPress}>
+    <TouchableOpacity 
+      style={[styles.menuItem, disabled && { opacity: 0.5 }]} 
+      activeOpacity={0.7} 
+      onPress={onPress}
+      disabled={disabled}
+    >
       <View style={[styles.menuIconBg, danger && styles.menuIconBgDanger]}>
         <Ionicons name={icon} size={20} color={danger ? palette.danger : palette.textPrimary} />
       </View>
-      <Text style={[styles.menuLabel, danger && styles.menuLabelDanger]}>{label}</Text>
+      <View style={{ flex: 1 }}>
+        <Text style={[styles.menuLabel, danger && styles.menuLabelDanger]}>{label}</Text>
+        {!!subLabel && <Text style={styles.menuSubLabel}>{subLabel}</Text>}
+      </View>
       {!danger && <Ionicons name="chevron-forward" size={18} color={palette.textSecondary} />}
     </TouchableOpacity>
   );
@@ -281,6 +316,7 @@ const styles = StyleSheet.create({
   },
   menuIconBgDanger: { backgroundColor: '#FF453A22' },
   menuLabel: { flex: 1, ...typography.body, color: palette.textPrimary },
+  menuSubLabel: { ...typography.caption, color: palette.textSecondary, marginTop: 2 },
   menuLabelDanger: { color: palette.danger },
   menuDivider: {
     height: 1,

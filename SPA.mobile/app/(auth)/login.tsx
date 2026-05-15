@@ -19,6 +19,8 @@ import { useAuth } from '@/context/AuthContext';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
+import { syncService } from '@/services/sync.service';
+
 export default function LoginScreen() {
   const { login } = useAuth();
   const [email, setEmail] = useState('');
@@ -38,6 +40,12 @@ export default function LoginScreen() {
     setLoading(true);
     try {
       await login({ email, password });
+      // Sync data after login
+      try {
+        await syncService.pullFromCloud();
+      } catch (syncErr) {
+        console.error('Post-login sync failed:', syncErr);
+      }
       router.replace('/(tabs)');
     } catch (err: any) {
       const msg = err?.response?.data?.message;

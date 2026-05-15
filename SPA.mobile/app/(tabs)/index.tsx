@@ -22,6 +22,7 @@ import {
   DEFAULT_LOCATION,
   CURRENT_ADDRESS,
 } from '@/constants/mockData';
+import { useWallet } from '@/context/WalletContext';
 
 // react-native-maps is native-only
 let MapView: any = null;
@@ -45,6 +46,7 @@ const CATEGORIES: { type: Category; label: string }[] = [
 
 export default function HomeScreen() {
   const [selectedCategory, setSelectedCategory] = useState<Category>('car');
+  const { balance } = useWallet();
 
   return (
     <View style={styles.root}>
@@ -79,7 +81,7 @@ export default function HomeScreen() {
               >
                 <Ionicons name="wallet-outline" size={14} color={palette.white} />
                 <Text style={styles.balanceHeaderText}>
-                  {mockUser.balance.toLocaleString()}đ
+                  {balance.toLocaleString()}đ
                 </Text>
               </TouchableOpacity>
 

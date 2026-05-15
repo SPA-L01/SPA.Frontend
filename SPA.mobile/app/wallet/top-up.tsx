@@ -8,7 +8,7 @@ import {
   SafeAreaView,
   StatusBar,
   TextInput,
-  Dimensions,
+  Alert,
 } from 'react-native';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -26,11 +26,20 @@ export default function TopUpScreen() {
   const { topup } = useWallet();
 
   const handleTopUp = async () => {
+    const parsed = parseInt(amount || '0', 10);
+    if (parsed < 1000) {
+      Alert.alert('Số tiền không hợp lệ', 'Vui lòng nạp tối thiểu 1.000đ');
+      return;
+    }
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 1000));
-    await topup(parseInt(amount || '0', 10), selectedMethod.label);
-    setLoading(false);
-    router.replace('/wallet');
+    try {
+      await topup(parsed, selectedMethod.label);
+      router.replace('/wallet');
+    } catch (e: any) {
+      Alert.alert('Nạp tiền thất bại', e?.response?.data?.message ?? 'Vui lòng thử lại');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

@@ -66,3 +66,19 @@ export const parkingService = {
     return response.data;
   },
 };
+
+export const walletService = {
+  getWallet: async () => {
+    const response = await api.get('/wallet/me');
+    return response.data;
+  },
+  getTransactions: async () => {
+    const response = await api.get('/wallet/me/transactions');
+    return response.data;
+  },
+  topUp: async (amount: number) => {
+    const response = await api.post('/wallet/me/top-up', { amount });
+    return response.data;
+  },
+};
+

@@ -7,16 +7,15 @@ import {
   ScrollView,
   SafeAreaView,
   StatusBar,
-  Dimensions,
+  ActivityIndicator,
 } from 'react-native';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { palette, spacing, radius, typography, shadows } from '@/constants/theme';
-import { mockUser, mockTransactions, Transaction } from '@/constants/mockData';
-import { useWallet } from '@/context/WalletContext';
+import { mockUser } from '@/constants/mockData';
+import { useWallet, Transaction } from '@/context/WalletContext';
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 function TransactionItem({ item }: { item: Transaction }) {
   const isNegative = item.type === 'payment';
@@ -48,8 +47,14 @@ function TransactionItem({ item }: { item: Transaction }) {
 }
 
 export default function WalletScreen() {
-  const { balance, transactions } = useWallet();
-  const displayTransactions = transactions.length > 0 ? transactions : mockTransactions;
+  const { balance, transactions, loading, reload } = useWallet();
+
+  // Reload wallet data every time this screen comes into focus
+  useFocusEffect(
+    React.useCallback(() => {
+      reload();
+    }, [reload])
+  );
 
   return (
     <View style={styles.root}>
@@ -151,14 +156,25 @@ export default function WalletScreen() {
           </TouchableOpacity>
         </View>
 
-        <View style={styles.transactionCard}>
-          {displayTransactions.map((t, i) => (
-            <React.Fragment key={t.id}>
-              <TransactionItem item={t as Transaction} />
-              {i < displayTransactions.length - 1 && <View style={styles.divider} />}
-            </React.Fragment>
-          ))}
-        </View>
+        {loading ? (
+          <View style={styles.transactionCard}>
+            <ActivityIndicator size="small" color={palette.textSecondary} style={{ padding: spacing.xl }} />
+          </View>
+        ) : transactions.length === 0 ? (
+          <View style={[styles.transactionCard, styles.emptyState]}>
+            <Ionicons name="receipt-outline" size={32} color={palette.textMuted} />
+            <Text style={styles.emptyText}>Chưa có giao dịch nào</Text>
+          </View>
+        ) : (
+          <View style={styles.transactionCard}>
+            {transactions.map((t, i) => (
+              <React.Fragment key={t.id}>
+                <TransactionItem item={t} />
+                {i < transactions.length - 1 && <View style={styles.divider} />}
+              </React.Fragment>
+            ))}
+          </View>
+        )}
 
         <View style={{ height: 100 }} />
       </ScrollView>
@@ -219,4 +235,6 @@ const styles = StyleSheet.create({
   statusBadge: { paddingHorizontal: 8, paddingVertical: 2, borderRadius: 4 },
   statusText: { fontSize: 9, fontWeight: '700' },
   divider: { height: 1, backgroundColor: palette.offWhite, marginHorizontal: spacing.md },
+  emptyState: { alignItems: 'center', justifyContent: 'center', padding: spacing.xl, gap: spacing.sm },
+  emptyText: { fontSize: 14, color: palette.textMuted, fontWeight: '500' },
 });

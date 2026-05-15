@@ -80,5 +80,42 @@ export const walletService = {
     const response = await api.post('/wallet/me/top-up', { amount });
     return response.data;
   },
+  createPayment: async (amount: number, note?: string) => {
+    const response = await api.post('/wallet/me/payment', { amount, note });
+    return response.data;
+  },
 };
+
+export const sessionsService = {
+  checkIn: async (payload: {
+    parkingLocationId: string;
+    vehicleType: 'car' | 'motor' | 'bicycle' | 'truck';
+    slotId?: string;
+    licensePlate?: string;
+  }) => {
+    const response = await api.post('/sessions', payload);
+    return response.data;
+  },
+  getMySessions: async () => {
+    const response = await api.get('/sessions/my');
+    return response.data;
+  },
+  getMyActiveSession: async () => {
+    const response = await api.get('/sessions/my/active');
+    return response.data;
+  },
+  checkOut: async (sessionId: string) => {
+    const response = await api.patch(`/sessions/${sessionId}/checkout`);
+    return response.data;
+  },
+  cancelSession: async (sessionId: string) => {
+    const response = await api.delete(`/sessions/${sessionId}`);
+    return response.data;
+  },
+  saveSpot: async (sessionId: string, data: { latitude?: number; longitude?: number; photoUrl?: string; note?: string }) => {
+    const response = await api.post(`/sessions/${sessionId}/spot`, data);
+    return response.data;
+  },
+};
+
 

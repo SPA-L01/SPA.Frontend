@@ -15,7 +15,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { palette, spacing, radius, typography, shadows } from '@/constants/theme';
 import { mockPaymentMethods, mockParkingLots, PaymentMethod } from '@/constants/mockData';
-import { parkingService } from '@/services/api';
+import { parkingService, sessionsService } from '@/services/api';
 import { useWallet } from '@/context/WalletContext';
 
 const SERVICE_FEE = 2000;
@@ -24,10 +24,11 @@ export default function CheckoutScreen() {
   const params = useLocalSearchParams();
   const lotId = params.lotId as string;
   const slotCode = params.slotCode as string;
+  const slotId = params.slotId as string | undefined;
   const price = parseInt(params.price as string || '0', 10);
   const total = price + SERVICE_FEE;
 
-  const { balance, deduct } = useWallet();
+  const { balance, reload } = useWallet();
 
   // Load lot info (from API first, fallback mock)
   const [lot, setLot] = useState<any>(
@@ -66,34 +67,34 @@ export default function CheckoutScreen() {
     }
 
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 1200)); // UX delay
+    try {
+      // Create session on backend — this marks slot occupied and deducts wallet server-side
+      await sessionsService.checkIn({
+        parkingLocationId: lotId,
+        vehicleType: 'car',
+        slotId: slotId || undefined,
+      });
 
-    let success = false;
-    if (selectedMethod.brand === 'wallet') {
-      success = await deduct(total, 'Đặt chỗ đỗ xe', lotName);
-    } else {
-      // card / momo: giả thành công, không trừ ví
-      success = true;
+      // Refresh wallet balance from BE
+      await reload();
+
+      router.replace({
+        pathname: '/payment/success',
+        params: {
+          lotId,
+          lotName,
+          lotAddress,
+          slotCode: slotCode || '—',
+          total: total.toString(),
+          method: selectedMethod.label,
+        },
+      });
+    } catch (e: any) {
+      const msg = e?.response?.data?.message ?? 'Thanh toán thất bại. Vui lòng thử lại.';
+      Alert.alert('Lỗi', msg);
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
-
-    if (!success) {
-      Alert.alert('Lỗi', 'Thanh toán thất bại. Vui lòng thử lại.');
-      return;
-    }
-
-    router.replace({
-      pathname: '/payment/success',
-      params: {
-        lotId,
-        lotName,
-        lotAddress,
-        slotCode: slotCode || '—',
-        total: total.toString(),
-        method: selectedMethod.label,
-      },
-    });
   };
 
   return (

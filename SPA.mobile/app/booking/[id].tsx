@@ -1,14 +1,26 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, StatusBar, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { palette, spacing, typography, radius, shadows } from '@/constants/theme';
 import { useBookings } from '@/context/BookingContext';
+import { parkingService } from '@/services/api';
+import { locationService } from '@/services/location.service';
 
 export default function BookingDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { getBooking, completeBooking } = useBookings();
   const booking = getBooking(id);
+  const [lotCoords, setLotCoords] = useState<{ latitude: number; longitude: number } | null>(null);
+
+  useEffect(() => {
+    if (!booking?.lotId) return;
+    parkingService.getLocationDetail(booking.lotId).then((lot: any) => {
+      if (lot?.latitude && lot?.longitude) {
+        setLotCoords({ latitude: Number(lot.latitude), longitude: Number(lot.longitude) });
+      }
+    }).catch(() => {});
+  }, [booking?.lotId]);
 
   if (!booking) {
     return (
@@ -103,9 +115,21 @@ export default function BookingDetailScreen() {
           <Text style={styles.newSpotBtnText}>📍  Lưu vị trí xe (GPS + ảnh)</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.mapBtn} activeOpacity={0.85}>
-          <Ionicons name="navigate-outline" size={20} color={palette.textPrimary} />
-          <Text style={styles.mapBtnText}>Mở bản đồ chỉ đường tới bãi</Text>
+        <TouchableOpacity
+          style={[styles.mapBtn, !lotCoords && styles.mapBtnDisabled]}
+          activeOpacity={0.85}
+          onPress={() => {
+            if (lotCoords) {
+              locationService.openMapsNavigation(lotCoords.latitude, lotCoords.longitude, booking?.lotName);
+            } else {
+              Alert.alert('Không có GPS', 'Bãi đỗ xe này chưa có tọa độ GPS.');
+            }
+          }}
+        >
+          <Ionicons name="navigate-outline" size={20} color={lotCoords ? palette.textPrimary : palette.textSecondary} />
+          <Text style={[styles.mapBtnText, !lotCoords && { color: palette.textSecondary }]}>
+            {lotCoords ? 'Mở bản đồ chỉ đường tới bãi' : 'Đang tải vị trí...'}
+          </Text>
         </TouchableOpacity>
 
         {booking.status === 'active' && (
@@ -155,6 +179,7 @@ const styles = StyleSheet.create({
   newSpotBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: '#059669', borderRadius: radius.full, paddingVertical: 16, ...shadows.md },
   newSpotBtnText: { color: palette.white, fontSize: 15, fontWeight: '800' },
   mapBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: palette.white, borderRadius: radius.full, paddingVertical: 15, borderWidth: 1, borderColor: palette.border },
+  mapBtnDisabled: { opacity: 0.5 },
   mapBtnText: { color: palette.textPrimary, fontSize: 14, fontWeight: '800' },
   completeBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: '#111827', borderRadius: radius.full, paddingVertical: 16, ...shadows.md },
   completeBtnText: { color: palette.white, fontSize: 15, fontWeight: '900' },

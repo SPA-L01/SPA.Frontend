@@ -80,7 +80,6 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
 
   const reload = useCallback(async () => {
     try {
-      // Only fetch if user is logged in
       const token = await AsyncStorage.getItem('spa_access_token');
       if (!token) {
         setState((prev) => ({ ...prev, loading: false }));
@@ -97,8 +96,8 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
         transactions: Array.isArray(txList) ? txList.map(mapApiTransaction) : [],
         loading: false,
       });
-    } catch {
-      // API error or not logged in — keep balance at 0, stop loading
+    } catch (error) {
+      console.error('[WalletContext] Reload failed:', error);
       setState((prev) => ({ ...prev, loading: false }));
     }
   }, []);
@@ -108,32 +107,20 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
   }, [reload]);
 
   const topup = useCallback(async (amount: number, _method: string): Promise<void> => {
-    const result = await walletService.topUp(amount);
-    setState((prev) => ({
-      ...prev,
-      balance: result.newBalance,
-      transactions: [
-        mapApiTransaction({
-          ...result.transaction,
-          createdAt: result.transaction.createdAt ?? new Date().toISOString(),
-        }),
-        ...prev.transactions,
-      ].slice(0, 50),
-    }));
-  }, []);
+    await walletService.topUp(amount);
+    await reload(); // Refresh everything from BE
+  }, [reload]);
 
-  // deduct: used locally for optimistic booking UI (Phase 5 will call API)
-  const deduct = useCallback(async (amount: number, _title: string, _subtitle: string): Promise<boolean> => {
-    let success = false;
-    setState((prev) => {
-      if (prev.balance < amount) return prev;
-      success = true;
-      return { ...prev, balance: prev.balance - amount };
-    });
-    // give setState a tick
-    await new Promise((r) => setTimeout(r, 20));
-    return success;
-  }, []);
+  const deduct = useCallback(async (amount: number, title: string, subtitle: string): Promise<boolean> => {
+    try {
+      await walletService.createPayment(amount, subtitle || title);
+      await reload(); // Refresh from BE
+      return true;
+    } catch (error) {
+      console.error('[WalletContext] Deduct failed:', error);
+      return false;
+    }
+  }, [reload]);
 
   return (
     <WalletContext.Provider value={{ ...state, deduct, topup, reload }}>

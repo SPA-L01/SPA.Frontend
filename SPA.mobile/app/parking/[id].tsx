@@ -313,6 +313,7 @@ export default function ParkingDetailScreen() {
                 params: {
                   lotId: lot?.id ?? id,
                   slotCode: selectedSlot?.slotNumber,
+                  slotId: selectedSlot?.id,
                   price: totalPrice.toString(),
                 },
               });

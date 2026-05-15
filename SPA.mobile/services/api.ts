@@ -118,4 +118,35 @@ export const sessionsService = {
   },
 };
 
+export const userService = {
+  getMe: async () => {
+    const response = await api.get('/users/me');
+    return response.data;
+  },
+  updateProfile: async (data: { firstName?: string; lastName?: string; phoneNo?: string; avatarUrl?: string }) => {
+    const response = await api.patch('/users/me', data);
+    return response.data;
+  },
+};
+
+export const favouritesService = {
+  getFavourites: async () => {
+    const response = await api.get('/favourites');
+    return response.data;
+  },
+  addFavourite: async (locationId: string) => {
+    const response = await api.post('/favourites', { locationId });
+    return response.data;
+  },
+  removeFavourite: async (locationId: string) => {
+    const response = await api.delete(`/favourites/${locationId}`);
+    return response.data;
+  },
+  checkFavourite: async (locationId: string) => {
+    const response = await api.get(`/favourites/check/${locationId}`);
+    return response.data;
+  },
+};
+
+
 

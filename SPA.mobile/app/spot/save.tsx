@@ -81,6 +81,10 @@ export default function SaveSpotScreen() {
         updatedAt: now,
       };
       await saveSpot(spot);
+      
+      const spotDesc = [floor, zone, column].filter(Boolean).join(' - ');
+      notificationService.scheduleCarSpotReminder(spotDesc || 'Vị trí đã lưu');
+      
       setSaving(false);
       router.replace('/spot/current');
     };

@@ -75,6 +75,9 @@ export default function CheckoutScreen() {
         slotId: slotId || undefined,
       });
 
+      // Notify user (UX)
+      notificationService.scheduleSessionReminder(15, lotName);
+
       // Refresh wallet balance from BE
       await reload();
 

@@ -10,6 +10,9 @@ import { AppModeProvider } from '@/context/AppModeContext';
 import { WalletProvider } from '@/context/WalletContext';
 import { BookingProvider } from '@/context/BookingContext';
 import { ParkingSpotProvider } from '@/context/ParkingSpotContext';
+import { FavouritesProvider } from '@/context/FavouritesContext';
+import { notificationService } from '@/services/notification.service';
+import { useEffect } from 'react';
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -32,6 +35,10 @@ function RootNavigator() {
 }
 
 export default function RootLayout() {
+  useEffect(() => {
+    notificationService.registerForPushNotificationsAsync();
+  }, []);
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <AuthProvider>
@@ -39,7 +46,9 @@ export default function RootLayout() {
           <WalletProvider>
             <BookingProvider>
               <ParkingSpotProvider>
-                <RootNavigator />
+                <FavouritesProvider>
+                  <RootNavigator />
+                </FavouritesProvider>
               </ParkingSpotProvider>
             </BookingProvider>
           </WalletProvider>

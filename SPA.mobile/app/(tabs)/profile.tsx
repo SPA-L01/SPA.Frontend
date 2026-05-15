@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,20 +7,39 @@ import {
   ScrollView,
   SafeAreaView,
   StatusBar,
+  Image,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { palette, spacing, radius, typography, shadows } from '@/constants/theme';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
 import { useAppMode } from '@/context/AppModeContext';
+import { userService } from '@/services/api';
 
 export default function ProfileScreen() {
   const { isLoggedIn, logout, userId } = useAuth();
   const { isGuest } = useAppMode();
+  const [profile, setProfile] = useState<any>(null);
+
+  const loadProfile = async () => {
+    if (isGuest) return;
+    try {
+      const data = await userService.getMe();
+      setProfile(data);
+    } catch (e) {}
+  };
+
+  useFocusEffect(React.useCallback(() => {
+    loadProfile();
+  }, [isGuest]));
 
   const handleLogout = async () => {
     await logout();
   };
+
+  const displayName = profile 
+    ? `${profile.lastName || ''} ${profile.firstName || ''}`.trim() || 'Người dùng'
+    : 'Đang tải...';
 
   return (
     <View style={styles.root}>
@@ -36,7 +55,11 @@ export default function ProfileScreen() {
           {/* Avatar & Info */}
           <View style={styles.avatarSection}>
             <View style={[styles.avatar, styles.avatarPlaceholder]}>
-              <Ionicons name="person" size={40} color={palette.textMuted} />
+              {profile?.avatarUrl ? (
+                <Image source={{ uri: profile.avatarUrl }} style={styles.avatarImg} />
+              ) : (
+                <Ionicons name="person" size={40} color={palette.textMuted} />
+              )}
             </View>
             <View style={styles.nameSection}>
               {isGuest ? (
@@ -46,8 +69,16 @@ export default function ProfileScreen() {
                 </>
               ) : (
                 <>
-                  <Text style={styles.userName}>Tài khoản của tôi</Text>
-                  <Text style={styles.userEmail} numberOfLines={1}>{userId}</Text>
+                  <View style={styles.nameRow}>
+                    <Text style={styles.userName}>{displayName}</Text>
+                    <TouchableOpacity 
+                      style={styles.editIconBtn}
+                      onPress={() => router.push('/profile/edit')}
+                    >
+                      <Ionicons name="create-outline" size={18} color={palette.white} />
+                    </TouchableOpacity>
+                  </View>
+                  <Text style={styles.userEmail} numberOfLines={1}>{profile?.email || userId}</Text>
                 </>
               )}
             </View>
@@ -166,6 +197,24 @@ const styles = StyleSheet.create({
     backgroundColor: palette.darkBg2,
   },
   nameSection: { gap: 4, flex: 1 },
+  avatarImg: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 36,
+  },
+  nameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  editIconBtn: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#FFFFFF22',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   userName: { ...typography.h2, color: palette.white },
   userEmail: { ...typography.caption, color: palette.textMuted },
 

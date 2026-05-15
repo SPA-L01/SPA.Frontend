@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef, useCallback } from 'react';
+import React, { useState, useMemo, useRef, useCallback, useEffect } from 'react';
 import {
   View,
   Text,
@@ -59,22 +59,29 @@ export default function MapScreen() {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const snapPoints = useMemo(() => ['18%', '45%', '85%'], []);
 
-  React.useEffect(() => {
-    const fetchLots = async (lat = DEFAULT_LOCATION.latitude, lng = DEFAULT_LOCATION.longitude) => {
-      setLoading(true);
-      try {
-        const data = await parkingService.getNearbyLocations(lat, lng, 10);
-        if (data && data.length > 0) {
-          setParkingLots(data.map(normalizeParkingLot));
-        }
-      } catch (error) {
-        console.error('Failed to fetch parking locations:', error);
-        // giữ mock data nếu lỗi
-      } finally {
-        setLoading(false);
+  const fetchLots = useCallback(async (lat = DEFAULT_LOCATION.latitude, lng = DEFAULT_LOCATION.longitude, searchQuery = '') => {
+    setLoading(true);
+    try {
+      let data;
+      if (searchQuery) {
+        data = await parkingService.getLocations({ search: searchQuery, limit: 20 });
+        data = Array.isArray(data) ? data : data?.data ?? [];
+      } else {
+        data = await parkingService.getNearbyLocations(lat, lng, 10);
       }
-    };
+      
+      if (data && data.length > 0) {
+        setParkingLots(data.map(normalizeParkingLot));
+      }
+    } catch (error) {
+      console.error('Failed to fetch parking locations:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
+  // Initial GPS Init
+  useEffect(() => {
     const initGps = async () => {
       if (Platform.OS === 'web') {
         fetchLots();
@@ -108,13 +115,22 @@ export default function MapScreen() {
     };
 
     initGps();
-  }, []);
+  }, [fetchLots]);
 
-  const handleSheetChanges = useCallback((index: number) => {
-    if (Platform.OS !== 'web') {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+  // Search logic (debounced)
+  useEffect(() => {
+    if (search.length === 0) {
+      if (currentLocation) fetchLots(currentLocation.latitude, currentLocation.longitude);
+      else fetchLots();
+      return;
     }
-  }, []);
+
+    const delayDebounceFn = setTimeout(() => {
+      fetchLots(currentLocation?.latitude, currentLocation?.longitude, search);
+    }, 600);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [search, currentLocation, fetchLots]);
 
   const filteredLots = useMemo(() =>
     parkingLots.filter((l) =>
@@ -123,6 +139,12 @@ export default function MapScreen() {
     ),
     [parkingLots, search]
   );
+
+  const handleSheetChanges = useCallback((index: number) => {
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+  }, []);
 
   const onMarkerPress = (lot: any) => {
     setSelectedLot(lot);

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -10,19 +10,20 @@ import {
   Platform,
   SafeAreaView,
   Dimensions,
+  TextInput,
+  ActivityIndicator,
 } from 'react-native';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { palette, spacing, radius, typography, shadows } from '@/constants/theme';
 import { ParkingCard } from '@/components/ui/ParkingCard';
 import { CategoryButton } from '@/components/ui/CategoryButton';
 import {
-  mockParkingLots,
-  mockUser,
   DEFAULT_LOCATION,
   CURRENT_ADDRESS,
 } from '@/constants/mockData';
 import { useWallet } from '@/context/WalletContext';
+import { parkingService, userService } from '@/services/api';
 
 // react-native-maps is native-only
 let MapView: any = null;
@@ -46,7 +47,54 @@ const CATEGORIES: { type: Category; label: string }[] = [
 
 export default function HomeScreen() {
   const [selectedCategory, setSelectedCategory] = useState<Category>('car');
-  const { balance } = useWallet();
+  const [search, setSearch] = useState('');
+  const [profile, setProfile] = useState<any>(null);
+  const [parkingLots, setParkingLots] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { balance, reload } = useWallet();
+
+  const loadData = async () => {
+    try {
+      const [user, popular] = await Promise.all([
+        userService.getMe(),
+        parkingService.getLocations({ sortBy: 'viewCount', limit: 5 }),
+      ]);
+      setProfile(user);
+      setParkingLots(Array.isArray(popular) ? popular : popular.data || []);
+    } catch (e) {
+      console.error('Home load error:', e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useFocusEffect(useCallback(() => {
+    loadData();
+    reload();
+  }, []));
+
+  // Search effect
+  useEffect(() => {
+    if (search.length === 0) {
+      loadData();
+      return;
+    }
+    const delayDebounceFn = setTimeout(async () => {
+      setLoading(true);
+      try {
+        const data = await parkingService.getLocations({ search, limit: 10 });
+        setParkingLots(Array.isArray(data) ? data : data.data || []);
+      } catch (e) {
+      } finally {
+        setLoading(false);
+      }
+    }, 600);
+    return () => clearTimeout(delayDebounceFn);
+  }, [search]);
+
+  const displayName = profile 
+    ? `${profile.lastName || ''} ${profile.firstName || ''}`.trim() || 'User'
+    : 'Guest';
 
   return (
     <View style={styles.root}>
@@ -57,10 +105,10 @@ export default function HomeScreen() {
         <SafeAreaView>
           <View style={styles.headerInner}>
             {/* User greeting */}
-            <View style={styles.userRow}>
-              {mockUser.avatarUrl ? (
+            <TouchableOpacity style={styles.userRow} onPress={() => router.push('/(tabs)/profile')}>
+              {profile?.avatarUrl ? (
                 <Image
-                  source={{ uri: mockUser.avatarUrl }}
+                  source={{ uri: profile.avatarUrl }}
                   style={styles.avatar}
                 />
               ) : (
@@ -70,9 +118,9 @@ export default function HomeScreen() {
               )}
               <View style={styles.greetingText}>
                 <Text style={styles.greetingSmall}>Welcome back!</Text>
-                <Text style={styles.greetingName}>{mockUser.name}</Text>
+                <Text style={styles.greetingName} numberOfLines={1}>{displayName}</Text>
               </View>
-            </View>
+            </TouchableOpacity>
             {/* Balance Chip & Bell */}
             <View style={styles.topActions}>
               <TouchableOpacity 
@@ -95,6 +143,23 @@ export default function HomeScreen() {
           <Text style={styles.heroText}>
             Do you need a parking{'\n'}space for your car?
           </Text>
+
+          {/* Search Bar in Header */}
+          <View style={styles.searchContainer}>
+            <Ionicons name="search" size={20} color={palette.textMuted} />
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Search parking by name, address..."
+              placeholderTextColor={palette.textMuted}
+              value={search}
+              onChangeText={setSearch}
+            />
+            {search.length > 0 && (
+              <TouchableOpacity onPress={() => setSearch('')}>
+                <Ionicons name="close-circle" size={18} color={palette.textMuted} />
+              </TouchableOpacity>
+            )}
+          </View>
         </SafeAreaView>
       </View>
 
@@ -105,16 +170,14 @@ export default function HomeScreen() {
         showsVerticalScrollIndicator={false}
       >
         {/* Map Preview Card */}
-        <View style={styles.mapCard}>
+        <TouchableOpacity style={styles.mapCard} onPress={() => router.push('/(tabs)/map')}>
           {MapView ? (
             <MapView
               style={styles.mapPreview}
               provider={PROVIDER_DEFAULT}
               initialRegion={DEFAULT_LOCATION}
-              scrollEnabled={true}
-              zoomEnabled={true}
-              pitchEnabled={true}
-              rotateEnabled={true}
+              scrollEnabled={false}
+              zoomEnabled={false}
             />
           ) : (
             <View style={[styles.mapPreview, styles.mapPlaceholder]}>
@@ -131,7 +194,7 @@ export default function HomeScreen() {
               </Text>
             </View>
           </View>
-        </View>
+        </TouchableOpacity>
 
         {/* Category */}
         <View style={styles.sectionHeader}>
@@ -149,15 +212,26 @@ export default function HomeScreen() {
           ))}
         </View>
 
-        {/* Most visited */}
+        {/* List Results */}
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Your most visited car parks</Text>
+          <Text style={styles.sectionTitle}>
+            {search.length > 0 ? 'Search Results' : 'Your most visited car parks'}
+          </Text>
         </View>
-        <View style={styles.parkingList}>
-          {mockParkingLots.map((lot) => (
-            <ParkingCard key={lot.id} lot={lot} />
-          ))}
-        </View>
+        
+        {loading ? (
+          <ActivityIndicator size="large" color={palette.darkBg} style={{ marginTop: 20 }} />
+        ) : (
+          <View style={styles.parkingList}>
+            {parkingLots.length === 0 ? (
+              <Text style={styles.emptyText}>No parking lots found</Text>
+            ) : (
+              parkingLots.map((lot) => (
+                <ParkingCard key={lot.id} lot={lot} />
+              ))
+            )}
+          </View>
+        )}
 
         <View style={{ height: 100 }} />
       </ScrollView>
@@ -259,11 +333,34 @@ const styles = StyleSheet.create({
     borderColor: palette.darkBg2,
   },
   heroText: {
-    fontSize: 30,
+    fontSize: 28,
     fontWeight: '800',
     color: palette.white,
-    lineHeight: 38,
+    lineHeight: 34,
     letterSpacing: -0.5,
+    marginBottom: spacing.md,
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: palette.darkBg2,
+    borderRadius: radius.md,
+    paddingHorizontal: spacing.md,
+    height: 48,
+    gap: spacing.sm,
+    borderWidth: 1,
+    borderColor: palette.white + '10',
+  },
+  searchInput: {
+    flex: 1,
+    color: palette.white,
+    fontSize: 15,
+  },
+  emptyText: {
+    ...typography.body,
+    color: palette.textSecondary,
+    textAlign: 'center',
+    marginTop: 20,
   },
 
   // ── Scroll Content ────────────────────────────────────

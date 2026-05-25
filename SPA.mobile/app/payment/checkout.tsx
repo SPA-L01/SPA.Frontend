@@ -17,6 +17,8 @@ import { palette, spacing, radius, typography, shadows } from '@/constants/theme
 import { mockPaymentMethods, mockParkingLots, PaymentMethod } from '@/constants/mockData';
 import { parkingService, sessionsService } from '@/services/api';
 import { useWallet } from '@/context/WalletContext';
+import { analyticsService } from '@/services/analytics.service';
+import * as Sentry from '@sentry/react-native';
 
 const SERVICE_FEE = 2000;
 
@@ -55,6 +57,15 @@ export default function CheckoutScreen() {
 
   const handlePayment = async () => {
     if (!canPay) {
+      // Track: người dùng bị chặn vì không đủ tiền → điểm rơi (drop-off)
+      analyticsService.logEvent('payment_blocked', {
+        reason: 'insufficient_balance',
+        required: total,
+        available: balance,
+        lot_id: lotId,
+        lot_name: lotName,
+        payment_method: selectedMethod.brand,
+      });
       Alert.alert(
         'Số dư không đủ',
         `Ví hiện có ${balance.toLocaleString()}đ, cần ${total.toLocaleString()}đ.\nBạn có muốn nạp thêm tiền?`,
@@ -66,7 +77,27 @@ export default function CheckoutScreen() {
       return;
     }
 
+    // Track: bắt đầu thanh toán
+    analyticsService.logEvent('payment_initiated', {
+      lot_id: lotId,
+      lot_name: lotName,
+      total_amount: total,
+      payment_method: selectedMethod.brand,
+    });
+
     setLoading(true);
+
+    // Sentry Performance Transaction: đo thời gian hoàn thành luồng thanh toán
+    const transaction = Sentry.startInactiveSpan({
+      name: 'checkout_payment',
+      op: 'user.action',
+      attributes: {
+        lot_id: lotId,
+        payment_method: selectedMethod.brand,
+        total_amount: total,
+      },
+    });
+
     try {
       // Create session on backend — this marks slot occupied and deducts wallet server-side
       await sessionsService.checkIn({
@@ -81,6 +112,16 @@ export default function CheckoutScreen() {
       // Refresh wallet balance from BE
       await reload();
 
+      // Track: check-in thành công
+      analyticsService.logEvent('checkin_success', {
+        lot_id: lotId,
+        lot_name: lotName,
+        total_amount: total,
+        payment_method: selectedMethod.brand,
+      });
+
+      transaction?.end();
+
       router.replace({
         pathname: '/payment/success',
         params: {
@@ -94,6 +135,20 @@ export default function CheckoutScreen() {
       });
     } catch (e: any) {
       const msg = e?.response?.data?.message ?? 'Thanh toán thất bại. Vui lòng thử lại.';
+
+      // Track: thanh toán thất bại
+      analyticsService.logEvent('checkin_failed', {
+        lot_id: lotId,
+        error_message: msg,
+        payment_method: selectedMethod.brand,
+      });
+      analyticsService.captureError(e, {
+        action: 'checkin',
+        lot_id: lotId,
+        payment_method: selectedMethod.brand,
+      });
+
+      transaction?.end();
       Alert.alert('Lỗi', msg);
     } finally {
       setLoading(false);

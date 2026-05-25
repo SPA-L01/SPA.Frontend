@@ -9,10 +9,16 @@
       "distribution": "internal"
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "env": {
+        "SENTRY_SKIP_SOURCE_MAP_UPLOAD": "true"
+      }
     },
     "production": {
-      "autoIncrement": true
+      "autoIncrement": true,
+      "env": {
+        "SENTRY_SKIP_SOURCE_MAP_UPLOAD": "true"
+      }
     }
   },
   "submit": {

@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { authService, LoginDto, RegisterDto } from '@/services/auth.service';
+import * as Sentry from '@sentry/react-native';
+import { analyticsService } from '@/services/analytics.service';
 
 interface AuthState {
   userId: string | null;
@@ -28,6 +30,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         const loggedIn = await authService.isLoggedIn();
         const userId = await authService.getUserId();
+        // Khôi phục user context cho Sentry nếu đã đăng nhập trước đó
+        if (loggedIn && userId) {
+          Sentry.setUser({ id: userId });
+          analyticsService.setUserId(userId);
+        }
         setState({ userId, isLoggedIn: loggedIn, loading: false });
       } catch {
         setState({ userId: null, isLoggedIn: false, loading: false });
@@ -37,6 +44,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = async (dto: LoginDto) => {
     const data = await authService.login(dto);
+    // Gán user vào Sentry và analytics service
+    Sentry.setUser({ id: data.id });
+    analyticsService.setUserId(data.id);
     setState({ userId: data.id, isLoggedIn: true, loading: false });
   };
 
@@ -46,6 +56,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = async () => {
     await authService.logout();
+    // Xóa user context trong Sentry và analytics service
+    Sentry.setUser(null);
+    analyticsService.setUserId(null);
     setState({ userId: null, isLoggedIn: false, loading: false });
   };
 

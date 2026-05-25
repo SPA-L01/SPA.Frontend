@@ -9,6 +9,7 @@ import { palette, spacing, radius, typography, shadows } from '@/constants/theme
 import { sessionsService } from '@/services/api';
 import { useWallet } from '@/context/WalletContext';
 import { SurveyModal } from '@/components/SurveyModal';
+import { analyticsService } from '@/services/analytics.service';
 
 const STATUS_COLORS: Record<string, string> = {
   ACTIVE: '#30D158',
@@ -114,22 +115,49 @@ export default function SessionsScreen() {
   useFocusEffect(useCallback(() => { loadSessions(); }, [loadSessions]));
 
   const handleCheckOut = (sessionId: string) => {
+    // Track: người dùng bắt đầu quy trình check-out
+    analyticsService.logEvent('checkout_started', { session_id: sessionId });
+
     Alert.alert('Check-out?', 'Xác nhận trả chỗ và tính phí thực tế?', [
-      { text: 'Huỷ', style: 'cancel' },
+      {
+        text: 'Huỷ',
+        style: 'cancel',
+        onPress: () => {
+          // Track: người dùng huỷ bỏ quy trình check-out → điểm rơi
+          analyticsService.logEvent('checkout_cancelled_by_user', { session_id: sessionId });
+        },
+      },
       {
         text: 'Check-out',
         style: 'destructive',
         onPress: async () => {
+          const session = sessions.find((s) => s.id === sessionId);
           try {
             await sessionsService.checkOut(sessionId);
-            await reload(); 
+            await reload();
             loadSessions();
+
+            // Track: check-out thành công
+            analyticsService.logEvent('checkout_success', {
+              session_id: sessionId,
+              lot_name: session?.parkingLocation?.name ?? 'Unknown',
+              duration_minutes: session?.durationMinutes ?? 0,
+              total_fee: session?.totalFee ?? 0,
+            });
+
             // Hiển thị Khảo sát sau khi check-out thành công
             setTimeout(() => {
               setShowSurvey(true);
             }, 600);
           } catch (e: any) {
-            Alert.alert('Lỗi', e?.response?.data?.message ?? 'Không thể check-out');
+            const msg = e?.response?.data?.message ?? 'Không thể check-out';
+            // Track: check-out thất bại
+            analyticsService.logEvent('checkout_failed', {
+              session_id: sessionId,
+              error_message: msg,
+            });
+            analyticsService.captureError(e, { action: 'checkout', session_id: sessionId });
+            Alert.alert('Lỗi', msg);
           }
         },
       },
@@ -143,10 +171,17 @@ export default function SessionsScreen() {
         text: 'Huỷ phiên',
         style: 'destructive',
         onPress: async () => {
+          const session = sessions.find((s) => s.id === sessionId);
           try {
             await sessionsService.cancelSession(sessionId);
-            await reload(); 
+            await reload();
             loadSessions();
+
+            // Track: phiên bị huỷ → retention signal quan trọng
+            analyticsService.logEvent('session_cancelled', {
+              session_id: sessionId,
+              lot_name: session?.parkingLocation?.name ?? 'Unknown',
+            });
           } catch (e: any) {
             Alert.alert('Lỗi', e?.response?.data?.message ?? 'Không thể huỷ');
           }

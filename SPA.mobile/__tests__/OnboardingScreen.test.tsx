@@ -10,18 +10,18 @@ jest.mock('expo-linear-gradient', () => ({ LinearGradient: ({ children }: any) =
 describe('OnboardingScreen', () => {
   it('renders correctly', () => {
     const { getByText } = render(<OnboardingScreen />);
-    expect(getByText('Welcome to SPA Parking')).toBeTruthy();
+    expect(getByText('Chào mừng đến với SPA Parking')).toBeTruthy();
   });
 
   it('navigates to login when get started is pressed', () => {
     const { getByText } = render(<OnboardingScreen />);
-    const button = getByText('Get Started');
+    const button = getByText('Bắt đầu ngay');
     fireEvent.press(button);
-    expect(router.replace).toHaveBeenCalledWith('/(auth)/login');
+    expect(router.replace).toHaveBeenCalledWith('/(tabs)');
   });
 
   it('renders subtitle', () => {
     const { getByText } = render(<OnboardingScreen />);
-    expect(getByText(/Finding a parking spot/)).toBeTruthy();
+    expect(getByText(/Tìm kiếm chỗ đỗ xe chưa bao giờ dễ dàng đến thế/)).toBeTruthy();
   });
 });

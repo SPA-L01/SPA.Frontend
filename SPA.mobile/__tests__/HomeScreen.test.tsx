@@ -16,21 +16,42 @@ jest.mock('react-native-maps', () => ({
   PROVIDER_DEFAULT: 'default',
 }));
 
+jest.mock('expo-router', () => ({
+  router: { push: jest.fn() },
+  useFocusEffect: jest.fn((cb) => cb()),
+}));
+
+jest.mock('@/context/WalletContext', () => ({
+  useWallet: () => ({
+    balance: 50000,
+    reload: jest.fn(),
+  }),
+}));
+
+jest.mock('@/services/api', () => ({
+  parkingService: {
+    getLocations: jest.fn().mockResolvedValue([]),
+  },
+  userService: {
+    getMe: jest.fn().mockResolvedValue({ name: 'Test User' }),
+  },
+}));
+
 describe('HomeScreen', () => {
   it('renders correctly', () => {
     const { getByText } = render(<HomeScreen />);
-    expect(getByText('Welcome back!')).toBeTruthy();
+    expect(getByText('Chào mừng quay trở lại!')).toBeTruthy();
   });
 
   it('navigates to wallet when balance chip is pressed', () => {
     const { getByText } = render(<HomeScreen />);
-    const balanceText = getByText(/đ/); 
+    const balanceText = getByText(/50,000/); 
     fireEvent.press(balanceText);
     expect(router.push).toHaveBeenCalledWith('/wallet');
   });
 
   it('renders categories', () => {
     const { getByText } = render(<HomeScreen />);
-    expect(getByText('Car')).toBeTruthy();
+    expect(getByText('Ô tô')).toBeTruthy();
   });
 });

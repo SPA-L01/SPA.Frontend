@@ -9,7 +9,7 @@ interface SearchBarProps {
   placeholder?: string;
 }
 
-export function SearchBar({ value, onChangeText, placeholder = 'Search...' }: SearchBarProps) {
+export function SearchBar({ value, onChangeText, placeholder = 'Tìm kiếm...' }: SearchBarProps) {
   return (
     <View style={styles.container}>
       <Ionicons name="search-outline" size={20} color={palette.textSecondary} />

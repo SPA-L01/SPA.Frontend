@@ -14,8 +14,8 @@ module.exports = {
   collectCoverageFrom: [
     'app/**/*.{ts,tsx}',
     'components/**/*.{ts,tsx}',
-    '!**/node_modules/**',
   ],
+  coverageReporters: ['json'],
   // Force transformation for certain modules
   transform: {
     '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',

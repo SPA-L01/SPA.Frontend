@@ -39,10 +39,10 @@ const { width } = Dimensions.get('window');
 type Category = 'car' | 'truck' | 'motor' | 'bicycle';
 
 const CATEGORIES: { type: Category; label: string }[] = [
-  { type: 'car', label: 'Car' },
-  { type: 'truck', label: 'Track' },
-  { type: 'motor', label: 'Motor' },
-  { type: 'bicycle', label: 'Bicycle' },
+  { type: 'car', label: 'Ô tô' },
+  { type: 'truck', label: 'Xe tải' },
+  { type: 'motor', label: 'Xe máy' },
+  { type: 'bicycle', label: 'Xe đạp' },
 ];
 
 export default function HomeScreen() {
@@ -117,7 +117,7 @@ export default function HomeScreen() {
                 </View>
               )}
               <View style={styles.greetingText}>
-                <Text style={styles.greetingSmall}>Welcome back!</Text>
+                <Text style={styles.greetingSmall}>Chào mừng quay trở lại!</Text>
                 <Text style={styles.greetingName} numberOfLines={1}>{displayName}</Text>
               </View>
             </TouchableOpacity>
@@ -141,7 +141,7 @@ export default function HomeScreen() {
           </View>
 
           <Text style={styles.heroText}>
-            Do you need a parking{'\n'}space for your car?
+            Bạn cần tìm{'\n'}chỗ đỗ xe ô tô?
           </Text>
 
           {/* Search Bar in Header */}
@@ -149,7 +149,7 @@ export default function HomeScreen() {
             <Ionicons name="search" size={20} color={palette.textMuted} />
             <TextInput
               style={styles.searchInput}
-              placeholder="Search parking by name, address..."
+              placeholder="Tìm kiếm bãi xe theo tên, địa chỉ..."
               placeholderTextColor={palette.textMuted}
               value={search}
               onChangeText={setSearch}
@@ -188,7 +188,7 @@ export default function HomeScreen() {
           <View style={styles.locationChip}>
             <Ionicons name="location" size={14} color={palette.white} />
             <View>
-              <Text style={styles.locationLabel}>Your location</Text>
+              <Text style={styles.locationLabel}>Vị trí của bạn</Text>
               <Text style={styles.locationAddress} numberOfLines={1}>
                 {CURRENT_ADDRESS}
               </Text>
@@ -198,7 +198,7 @@ export default function HomeScreen() {
 
         {/* Category */}
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Category</Text>
+          <Text style={styles.sectionTitle}>Danh mục</Text>
         </View>
         <View style={styles.categoryRow}>
           {CATEGORIES.map((cat) => (
@@ -215,7 +215,7 @@ export default function HomeScreen() {
         {/* List Results */}
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>
-            {search.length > 0 ? 'Search Results' : 'Your most visited car parks'}
+            {search.length > 0 ? 'Kết quả tìm kiếm' : 'Bãi xe bạn hay ghé thăm'}
           </Text>
         </View>
         
@@ -224,7 +224,7 @@ export default function HomeScreen() {
         ) : (
           <View style={styles.parkingList}>
             {parkingLots.length === 0 ? (
-              <Text style={styles.emptyText}>No parking lots found</Text>
+              <Text style={styles.emptyText}>Không tìm thấy bãi đỗ xe nào</Text>
             ) : (
               parkingLots.map((lot) => (
                 <ParkingCard key={lot.id} lot={lot} />

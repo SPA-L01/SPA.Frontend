@@ -36,9 +36,9 @@ export default function OnboardingScreen() {
           </View>
 
           <View style={styles.textContainer}>
-            <Text style={styles.title}>Welcome to SPA Parking</Text>
+            <Text style={styles.title}>Chào mừng đến với SPA Parking</Text>
             <Text style={styles.subtitle}>
-              Finding a parking spot has never been easier. Search, book, and pay all in one app.
+              Tìm kiếm chỗ đỗ xe chưa bao giờ dễ dàng đến thế. Tìm kiếm, đặt trước và thanh toán tất cả trong một ứng dụng.
             </Text>
           </View>
 
@@ -47,7 +47,7 @@ export default function OnboardingScreen() {
             style={styles.button}
             onPress={handleGetStarted}
           >
-            <Text style={styles.buttonText}>Get Started</Text>
+            <Text style={styles.buttonText}>Bắt đầu ngay</Text>
             <Ionicons name="arrow-forward" size={20} color={palette.white} />
           </TouchableOpacity>
         </View>

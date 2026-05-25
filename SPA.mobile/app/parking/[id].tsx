@@ -178,7 +178,7 @@ export default function ParkingDetailScreen() {
 
   const VEHICLE_TABS: { key: 'car' | 'motorbike' | 'bicycle'; label: string; icon: string }[] = [
     { key: 'car', label: 'Xe hơi', icon: 'car' },
-    { key: 'motorbike', label: 'Moto', icon: 'bicycle' },
+    { key: 'motorbike', label: 'Xe máy', icon: 'bicycle' },
     { key: 'bicycle', label: 'Xe đạp', icon: 'bicycle-outline' as any },
   ];
 

@@ -33,7 +33,7 @@ export default function LoginScreen() {
 
   const handleLogin = async () => {
     if (!email || !password) {
-      setError('Please enter email and password');
+      setError('Vui lòng nhập email và mật khẩu');
       return;
     }
     setError('');
@@ -49,7 +49,7 @@ export default function LoginScreen() {
       router.replace('/(tabs)');
     } catch (err: any) {
       const msg = err?.response?.data?.message;
-      setError(Array.isArray(msg) ? msg[0] : (msg ?? 'Invalid credentials'));
+      setError(Array.isArray(msg) ? msg[0] : (msg ?? 'Thông tin đăng nhập không chính xác'));
     } finally {
       setLoading(false);
     }
@@ -85,13 +85,13 @@ export default function LoginScreen() {
               <Ionicons name="car" size={36} color={palette.white} />
             </View>
             <Text style={styles.appName}>SPA Parking</Text>
-            <Text style={styles.tagline}>Find your perfect spot, anytime.</Text>
+            <Text style={styles.tagline}>Tìm chỗ đỗ xe hoàn hảo của bạn, bất kỳ lúc nào.</Text>
           </View>
 
           {/* Login Card */}
           <View style={styles.card}>
-            <Text style={styles.cardTitle}>Welcome back</Text>
-            <Text style={styles.cardSubtitle}>Sign in to your account</Text>
+            <Text style={styles.cardTitle}>Chào mừng quay trở lại</Text>
+            <Text style={styles.cardSubtitle}>Đăng nhập vào tài khoản của bạn</Text>
 
             {error ? (
               <View style={styles.errorBox}>
@@ -128,9 +128,9 @@ export default function LoginScreen() {
             {/* Password Input */}
             <View style={styles.inputGroup}>
               <View style={styles.labelRow}>
-                <Text style={styles.inputLabel}>Password</Text>
+                <Text style={styles.inputLabel}>Mật khẩu</Text>
                 <TouchableOpacity>
-                  <Text style={styles.forgotText}>Forgot password?</Text>
+                  <Text style={styles.forgotText}>Quên mật khẩu?</Text>
                 </TouchableOpacity>
               </View>
               <View
@@ -175,14 +175,14 @@ export default function LoginScreen() {
                   <View style={[styles.dot, styles.dot3]} />
                 </View>
               ) : (
-                <Text style={styles.signInBtnText}>Sign In</Text>
+                <Text style={styles.signInBtnText}>Đăng nhập</Text>
               )}
             </TouchableOpacity>
 
             {/* Divider */}
             <View style={styles.dividerRow}>
               <View style={styles.dividerLine} />
-              <Text style={styles.dividerText}>or continue with</Text>
+              <Text style={styles.dividerText}>hoặc tiếp tục với</Text>
               <View style={styles.dividerLine} />
             </View>
 
@@ -201,9 +201,9 @@ export default function LoginScreen() {
 
           {/* Sign Up */}
           <View style={styles.signUpRow}>
-            <Text style={styles.signUpText}>Don't have an account? </Text>
+            <Text style={styles.signUpText}>Chưa có tài khoản? </Text>
             <TouchableOpacity onPress={() => router.push('/(auth)/register')}>
-              <Text style={styles.signUpLink}>Sign up</Text>
+              <Text style={styles.signUpLink}>Đăng ký</Text>
             </TouchableOpacity>
           </View>
 

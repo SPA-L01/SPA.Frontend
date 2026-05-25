@@ -77,3 +77,96 @@ jest.mock('axios', () => ({
   get: jest.fn(() => Promise.resolve({ data: [] })),
   post: jest.fn(() => Promise.resolve({ data: {} })),
 }));
+
+jest.mock('@react-native-async-storage/async-storage', () =>
+  require('@react-native-async-storage/async-storage/jest/async-storage-mock')
+);
+
+jest.mock('expo-location', () => ({
+  __esModule: true,
+  requestForegroundPermissionsAsync: jest.fn().mockResolvedValue({ status: 'granted' }),
+  getCurrentPositionAsync: jest.fn().mockResolvedValue({
+    coords: { latitude: 10.7769, longitude: 106.7009 },
+  }),
+  Accuracy: {
+    Balanced: 2,
+  },
+}));
+
+jest.mock('@/context/AuthContext', () => ({
+  useAuth: () => ({
+    userId: '1',
+    user: { name: 'Test User', email: 'test@example.com' },
+    isLoggedIn: true,
+    loading: false,
+    login: jest.fn(),
+    register: jest.fn(),
+    logout: jest.fn(),
+  }),
+}));
+
+jest.mock('@/context/WalletContext', () => ({
+  useWallet: () => ({
+    balance: 50000,
+    transactions: [],
+    loading: false,
+    deduct: jest.fn().mockResolvedValue(true),
+    topup: jest.fn().mockResolvedValue(undefined),
+    reload: jest.fn().mockResolvedValue(undefined),
+  }),
+}));
+
+jest.mock('@/context/AppModeContext', () => ({
+  useAppMode: () => ({
+    mode: 'authenticated',
+    isGuest: false,
+    isAuthenticated: true,
+  }),
+}));
+
+jest.mock('@/context/BookingContext', () => ({
+  useBookings: () => ({
+    bookings: [],
+    addBooking: jest.fn(),
+    saveCarSpot: jest.fn(),
+    completeBooking: jest.fn(),
+    getBooking: jest.fn(),
+  }),
+}));
+
+jest.mock('@/context/FavouritesContext', () => ({
+  useFavourites: () => ({
+    favouriteIds: [],
+    favouriteLots: [],
+    loading: false,
+    toggleFavourite: jest.fn(),
+    isFavourite: jest.fn().mockReturnValue(false),
+    refresh: jest.fn(),
+  }),
+}));
+
+jest.mock('@/context/ParkingSpotContext', () => ({
+  useParkingSpot: () => ({
+    currentSpot: null,
+    history: [],
+    loading: false,
+    saveSpot: jest.fn(),
+    completeSpot: jest.fn(),
+    refresh: jest.fn(),
+  }),
+}));
+
+jest.mock('@/context/ToastContext', () => ({
+  useToast: () => ({
+    showToast: jest.fn(),
+  }),
+}));
+
+jest.mock('@/services/notification.service', () => ({
+  notificationService: {
+    registerForPushNotificationsAsync: jest.fn().mockResolvedValue(undefined),
+    scheduleNotificationAsync: jest.fn().mockResolvedValue(undefined),
+  },
+}));
+
+

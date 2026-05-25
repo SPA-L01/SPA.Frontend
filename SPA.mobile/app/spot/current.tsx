@@ -46,7 +46,7 @@ export default function CurrentSpotScreen() {
       <View style={styles.centered}>
         <Ionicons name="car-outline" size={64} color={palette.textSecondary} />
         <Text style={styles.emptyTitle}>Chưa lưu vị trí xe</Text>
-        <Text style={styles.emptySub}>Bấm "Tôi đã gửi xe ở đây" từ bãi đỗ để lưu vị trí.</Text>
+        <Text style={styles.emptySub}>Bấm &quot;Tôi đã gửi xe ở đây&quot; từ bãi đỗ để lưu vị trí.</Text>
         <TouchableOpacity style={styles.saveBtn} onPress={() => router.push('/spot/save')}>
           <Text style={styles.saveBtnText}>Lưu ngay</Text>
         </TouchableOpacity>

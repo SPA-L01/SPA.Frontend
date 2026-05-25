@@ -46,7 +46,7 @@ export function ParkingCard({ lot, variant = 'default' }: ParkingCardProps) {
         <View style={styles.footer}>
           <Text style={styles.price}>
             <Text style={styles.priceBold}>{Number(price).toLocaleString()}đ</Text>
-            {' '}/ {freeSlots} free
+            {' '}/ {freeSlots} trống
           </Text>
         </View>
       </View>

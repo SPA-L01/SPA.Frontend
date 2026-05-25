@@ -58,7 +58,6 @@ import AddCardScreen from '../app/wallet/add-card';
 import ParkingDetailScreen from '../app/parking/[id]';
 import CheckoutScreen from '../app/payment/checkout';
 import ModalScreen from '../app/modal';
-import ExploreScreen from '../app/(tabs)/explore';
 import ParallaxScrollView from '../components/parallax-scroll-view';
 import { ExternalLink } from '../components/external-link';
 import { HapticTab } from '../components/haptic-tab';
@@ -103,7 +102,6 @@ describe('Ultimate Coverage Full Suite', () => {
 
   it('covers Misc Components and Screens', () => {
     try { render(<ModalScreen />); } catch(e) {}
-    try { render(<ExploreScreen />); } catch(e) {}
     try { render(<ParallaxScrollView headerBackgroundColor={{light:'w',dark:'b'}} headerImage={<View/>}><Text>C</Text></ParallaxScrollView>); } catch(e) {}
     try { render(<ExternalLink href="h">L</ExternalLink>); } catch(e) {}
     try { render(<HapticTab route={{ name: 'index', key: '1' }} onPress={() => {}} />); } catch(e) {}

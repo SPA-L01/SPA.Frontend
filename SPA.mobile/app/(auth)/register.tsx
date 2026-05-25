@@ -22,19 +22,19 @@ export default function RegisterScreen() {
 
   const handleRegister = async () => {
     if (!firstName || !lastName || !email || !password) {
-      setError('Please fill in all fields');
+      setError('Vui lòng điền đầy đủ các thông tin');
       return;
     }
     setError('');
     setLoading(true);
     try {
       await register({ firstName, lastName, email, password });
-      Alert.alert('Account created!', 'Please sign in to continue.', [
+      Alert.alert('Tạo tài khoản thành công!', 'Vui lòng đăng nhập để tiếp tục.', [
         { text: 'OK', onPress: () => router.replace('/(auth)/login') },
       ]);
     } catch (err: any) {
       const msg = err?.response?.data?.message;
-      setError(Array.isArray(msg) ? msg.join('\n') : (msg ?? 'Registration failed'));
+      setError(Array.isArray(msg) ? msg.join('\n') : (msg ?? 'Đăng ký thất bại'));
     } finally {
       setLoading(false);
     }
@@ -54,19 +54,19 @@ export default function RegisterScreen() {
               <Ionicons name="car" size={36} color={palette.white} />
             </View>
             <Text style={styles.appName}>SPA Parking</Text>
-            <Text style={styles.tagline}>Create your account</Text>
+            <Text style={styles.tagline}>Tạo tài khoản của bạn</Text>
           </View>
 
           <View style={styles.card}>
-            <Text style={styles.cardTitle}>Get started</Text>
-            <Text style={styles.cardSubtitle}>Fill in your details below</Text>
+            <Text style={styles.cardTitle}>Đăng ký</Text>
+            <Text style={styles.cardSubtitle}>Điền thông tin chi tiết của bạn bên dưới</Text>
 
             {error ? <View style={styles.errorBox}><Text style={styles.errorText}>{error}</Text></View> : null}
 
             {[
-              { label: 'First Name', value: firstName, set: setFirstName, placeholder: 'John', icon: 'person-outline' },
-              { label: 'Last Name', value: lastName, set: setLastName, placeholder: 'Doe', icon: 'person-outline' },
-              { label: 'Email', value: email, set: setEmail, placeholder: 'john@example.com', icon: 'mail-outline', keyboard: 'email-address' as any },
+              { label: 'Tên', value: firstName, set: setFirstName, placeholder: 'Vd: Anh', icon: 'person-outline' },
+              { label: 'Họ', value: lastName, set: setLastName, placeholder: 'Vd: Nguyễn', icon: 'person-outline' },
+              { label: 'Email', value: email, set: setEmail, placeholder: 'john.doe@example.com', icon: 'mail-outline', keyboard: 'email-address' as any },
             ].map(({ label, value, set, placeholder, icon, keyboard }) => (
               <View key={label} style={styles.inputGroup}>
                 <Text style={styles.inputLabel}>{label}</Text>
@@ -79,7 +79,7 @@ export default function RegisterScreen() {
             ))}
 
             <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Password</Text>
+              <Text style={styles.inputLabel}>Mật khẩu</Text>
               <View style={styles.inputWrapper}>
                 <Ionicons name="lock-closed-outline" size={18} color={palette.textSecondary} />
                 <TextInput style={styles.input} placeholder="••••••••" placeholderTextColor={palette.textSecondary}
@@ -91,14 +91,14 @@ export default function RegisterScreen() {
             </View>
 
             <TouchableOpacity style={[styles.btn, loading && styles.btnLoading]} onPress={handleRegister} activeOpacity={0.85} disabled={loading}>
-              <Text style={styles.btnText}>{loading ? 'Creating account…' : 'Create Account'}</Text>
+              <Text style={styles.btnText}>{loading ? 'Đang tạo tài khoản…' : 'Tạo tài khoản'}</Text>
             </TouchableOpacity>
           </View>
 
           <View style={styles.signInRow}>
-            <Text style={styles.signInText}>Already have an account? </Text>
+            <Text style={styles.signInText}>Đã có tài khoản? </Text>
             <TouchableOpacity onPress={() => router.back()}>
-              <Text style={styles.signInLink}>Sign in</Text>
+              <Text style={styles.signInLink}>Đăng nhập</Text>
             </TouchableOpacity>
           </View>
           <View style={{ height: 40 }} />

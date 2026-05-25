@@ -11,13 +11,13 @@
     "preview": {
       "distribution": "internal",
       "env": {
-        "SENTRY_SKIP_SOURCE_MAP_UPLOAD": "true"
+        "SENTRY_DISABLE_AUTO_UPLOAD": "true"
       }
     },
     "production": {
       "autoIncrement": true,
       "env": {
-        "SENTRY_SKIP_SOURCE_MAP_UPLOAD": "true"
+        "SENTRY_DISABLE_AUTO_UPLOAD": "true"
       }
     }
   },

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "386378665942",
+    "project_id": "spa-mobile-444c5",
+    "storage_bucket": "spa-mobile-444c5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:386378665942:android:8bc6101051f56fd5e11e77",
+        "android_client_info": {
+          "package_name": "com.ngohai1902.spamobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDanDaOITxDne7WiQsvDcOoUVbWrInIqyc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

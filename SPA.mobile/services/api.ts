@@ -1,7 +1,7 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const BASE_URL = process.env.EXPO_PUBLIC_API_URL ?? 'http://192.168.1.194:3000/api/v1';
+const BASE_URL = process.env.EXPO_PUBLIC_API_URL ?? 'https://spa-backend-jxa3.onrender.com/api/v1';
 
 export const api = axios.create({
   baseURL: BASE_URL,
@@ -166,6 +166,27 @@ export const savedParkingService = {
   },
   completeSpot: async (id: string, durationMs?: number) => {
     const response = await api.post(`/saved-parking/${id}/complete`, { durationMs });
+    return response.data;
+  },
+};
+
+export const surveyService = {
+  submitSurvey: async (data: {
+    overallRating: number;
+    usabilityRating: number;
+    bookingRating: number;
+    uiRating: number;
+    comment?: string;
+    appVersion?: string;
+    deviceOS?: string;
+    sessionDurationSeconds?: number;
+    lastVisitedScreen?: string;
+  }) => {
+    const response = await api.post('/surveys', data);
+    return response.data;
+  },
+  getAnalytics: async () => {
+    const response = await api.get('/surveys/analytics');
     return response.data;
   },
 };

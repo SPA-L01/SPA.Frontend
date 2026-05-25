@@ -8,6 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { palette, spacing, radius, typography, shadows } from '@/constants/theme';
 import { sessionsService } from '@/services/api';
 import { useWallet } from '@/context/WalletContext';
+import { SurveyModal } from '@/components/SurveyModal';
 
 const STATUS_COLORS: Record<string, string> = {
   ACTIVE: '#30D158',
@@ -96,6 +97,7 @@ export default function SessionsScreen() {
   const [sessions, setSessions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'ALL' | 'ACTIVE' | 'COMPLETED' | 'CANCELLED'>('ALL');
+  const [showSurvey, setShowSurvey] = useState(false);
 
   const loadSessions = useCallback(async () => {
     setLoading(true);
@@ -122,6 +124,10 @@ export default function SessionsScreen() {
             await sessionsService.checkOut(sessionId);
             await reload(); 
             loadSessions();
+            // Hiển thị Khảo sát sau khi check-out thành công
+            setTimeout(() => {
+              setShowSurvey(true);
+            }, 600);
           } catch (e: any) {
             Alert.alert('Lỗi', e?.response?.data?.message ?? 'Không thể check-out');
           }
@@ -201,6 +207,9 @@ export default function SessionsScreen() {
           <View style={{ height: 100 }} />
         </ScrollView>
       )}
+
+      {/* Modal Khảo sát sự hài lòng */}
+      <SurveyModal visible={showSurvey} onClose={() => setShowSurvey(false)} />
     </View>
   );
 }

@@ -27,6 +27,11 @@
         "ACCESS_COARSE_LOCATION",
         "ACCESS_FINE_LOCATION"
       ],
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyBqiUJgeEFJy_ZgFe2kh08BKP7ojkL6nLI"
+        }
+      },
       "adaptiveIcon": {
         "backgroundColor": "#0D0D0F",
         "foregroundImage": "./assets/images/android-icon-foreground.png",

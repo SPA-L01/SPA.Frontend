@@ -15,6 +15,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { palette, spacing, radius, typography, shadows } from '@/constants/theme';
 import { mockPaymentMethods, PaymentMethod } from '@/constants/mockData';
 import { useWallet } from '@/context/WalletContext';
+import * as Sentry from '@sentry/react-native';
 
 const TOP_UP_AMOUNTS = [50000, 100000, 200000, 500000, 1000000, 2000000];
 
@@ -26,6 +27,7 @@ export default function TopUpScreen() {
   const { topup } = useWallet();
 
   const handleTopUp = async () => {
+    Sentry.addBreadcrumb({ category: 'user.action', message: 'User pressed confirm top-up', level: 'info', data: { screen: 'TopUpScreen', amount } });
     const parsed = parseInt(amount || '0', 10);
     if (parsed < 1000) {
       Alert.alert('Số tiền không hợp lệ', 'Vui lòng nạp tối thiểu 1.000đ');
@@ -80,7 +82,10 @@ export default function TopUpScreen() {
               <TouchableOpacity 
                 key={amt}
                 style={[styles.quickAmountBtn, amount === amt.toString() && styles.quickAmountBtnActive]}
-                onPress={() => setAmount(amt.toString())}
+                onPress={() => {
+                  Sentry.addBreadcrumb({ category: 'user.action', message: 'User selected top-up amount', level: 'info', data: { screen: 'TopUpScreen', amount: amt } });
+                  setAmount(amt.toString());
+                }}
               >
                 <Text style={[styles.quickAmountText, amount === amt.toString() && styles.quickAmountTextActive]}>
                   {amt >= 1000000 ? `${amt / 1000000}Tr` : `${amt / 1000}K`}
@@ -94,7 +99,10 @@ export default function TopUpScreen() {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionLabel}>Chọn phương thức nạp tiền</Text>
-            <TouchableOpacity onPress={() => router.push('/wallet/add-card')}>
+            <TouchableOpacity onPress={() => {
+              Sentry.addBreadcrumb({ category: 'user.action', message: 'User navigated to add card', level: 'info', data: { screen: 'TopUpScreen' } });
+              router.push('/wallet/add-card');
+            }}>
               <Text style={styles.addCardText}>+ Thêm thẻ mới</Text>
             </TouchableOpacity>
           </View>
@@ -104,7 +112,10 @@ export default function TopUpScreen() {
               <TouchableOpacity 
                 key={method.id}
                 style={[styles.methodItem, selectedMethod.id === method.id && styles.methodItemSelected]}
-                onPress={() => setSelectedMethod(method)}
+                onPress={() => {
+                  Sentry.addBreadcrumb({ category: 'user.action', message: 'User selected payment method', level: 'info', data: { screen: 'TopUpScreen', method: method.brand } });
+                  setSelectedMethod(method);
+                }}
               >
                 <View style={styles.methodIconWrapper}>
                    <Ionicons 

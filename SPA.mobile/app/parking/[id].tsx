@@ -17,6 +17,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { palette, spacing, radius, typography, shadows } from '@/constants/theme';
 import { mockParkingLots } from '@/constants/mockData';
 import { parkingService } from '@/services/api';
+import * as Sentry from '@sentry/react-native';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -144,6 +145,7 @@ export default function ParkingDetailScreen() {
   }, [id]);
 
   const handleSlotPress = useCallback((slot: DisplaySlot) => {
+    Sentry.addBreadcrumb({ category: 'user.action', message: 'User pressed slot', level: 'info', data: { screen: 'ParkingDetailScreen', slot: slot.slotNumber } });
     setAllSlots((prev) =>
       prev.map((s) => ({
         ...s,
@@ -217,7 +219,11 @@ export default function ParkingDetailScreen() {
           <TouchableOpacity
             key={tab.key}
             style={[styles.vehicleTab, vehicleFilter === tab.key && styles.vehicleTabActive]}
-            onPress={() => { setVehicleFilter(tab.key); setSelectedSlot(null); }}
+            onPress={() => {
+              Sentry.addBreadcrumb({ category: 'user.action', message: 'User changed vehicle filter', level: 'info', data: { screen: 'ParkingDetailScreen', filter: tab.key } });
+              setVehicleFilter(tab.key);
+              setSelectedSlot(null);
+            }}
           >
             <Ionicons
               name={tab.icon as any}
@@ -235,7 +241,10 @@ export default function ParkingDetailScreen() {
       </View>
 
       {/* ── Time Selector ── */}
-      <TouchableOpacity style={styles.timeSelector} onPress={() => setShowTimeModal(true)}>
+      <TouchableOpacity style={styles.timeSelector} onPress={() => {
+        Sentry.addBreadcrumb({ category: 'user.action', message: 'User opened time selector', level: 'info', data: { screen: 'ParkingDetailScreen' } });
+        setShowTimeModal(true);
+      }}>
         <Ionicons name="time-outline" size={18} color={palette.textPrimary} />
         <Text style={styles.timeSelectorText}>{selectedTime}</Text>
         <Ionicons name="chevron-down" size={16} color={palette.textSecondary} />
@@ -283,12 +292,13 @@ export default function ParkingDetailScreen() {
       <View style={styles.footerCol}>
         <TouchableOpacity
           style={styles.savedHereBtn}
-          onPress={() =>
+          onPress={() => {
+            Sentry.addBreadcrumb({ category: 'user.action', message: 'User pressed saved here button', level: 'info', data: { screen: 'ParkingDetailScreen' } });
             router.push({
               pathname: '/spot/save',
               params: { parkingLocationId: lot?.id ?? id, parkingLocationName: lotName },
-            })
-          }
+            });
+          }}
         >
           <Ionicons name="location-outline" size={16} color="#059669" />
           <Text style={styles.savedHereBtnText}>Tôi đã gửi xe ở đây</Text>
@@ -306,6 +316,7 @@ export default function ParkingDetailScreen() {
             activeOpacity={0.85}
             disabled={!selectedSlot}
             onPress={() => {
+              Sentry.addBreadcrumb({ category: 'user.action', message: 'User initiated booking', level: 'info', data: { screen: 'ParkingDetailScreen', slot: selectedSlot?.slotNumber } });
               router.push({
                 pathname: '/payment/checkout',
                 params: {
@@ -337,7 +348,11 @@ export default function ParkingDetailScreen() {
               <TouchableOpacity
                 key={t}
                 style={[styles.modalOption, selectedTime === t && styles.modalOptionSelected]}
-                onPress={() => { setSelectedTime(t); setShowTimeModal(false); }}
+                onPress={() => {
+                  Sentry.addBreadcrumb({ category: 'user.action', message: 'User selected time', level: 'info', data: { screen: 'ParkingDetailScreen', time: t } });
+                  setSelectedTime(t);
+                  setShowTimeModal(false);
+                }}
               >
                 <Text style={[styles.modalOptionText, selectedTime === t && styles.modalOptionTextSelected]}>
                   {t}

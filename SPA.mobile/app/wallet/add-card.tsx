@@ -14,6 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { palette, spacing, radius, typography, shadows } from '@/constants/theme';
+import * as Sentry from '@sentry/react-native';
 
 export default function AddCardScreen() {
   const [cardNumber, setCardNumber] = useState('');
@@ -37,6 +38,7 @@ export default function AddCardScreen() {
   };
 
   const handleAddCard = () => {
+    Sentry.addBreadcrumb({ category: 'user.action', message: 'User submitted add card', level: 'info', data: { screen: 'AddCardScreen', brand: cardBrand } });
     setLoading(true);
     setTimeout(() => {
       setLoading(false);

@@ -5,6 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { palette, radius, spacing, typography, shadows } from '@/constants/theme';
 import { ParkingLot } from '@/constants/mockData';
 import { useFavourites } from '@/context/FavouritesContext';
+import * as Sentry from '@sentry/react-native';
 
 interface ParkingCardProps {
   lot: ParkingLot;
@@ -24,13 +25,19 @@ export function ParkingCard({ lot, variant = 'default' }: ParkingCardProps) {
     <TouchableOpacity
       style={[styles.card, variant === 'compact' && styles.cardCompact]}
       activeOpacity={0.75}
-      onPress={() => router.push(`/parking/${lot.id}`)}
+      onPress={() => {
+        Sentry.addBreadcrumb({ category: 'user.action', message: 'User selected parking lot from list', level: 'info', data: { screen: 'HomeScreen', lotName: lot.name } });
+        router.push(`/parking/${lot.id}`);
+      }}
     >
       <View style={styles.imageContainer}>
         <Image source={{ uri: imageUrl }} style={styles.image} />
         <TouchableOpacity 
           style={styles.heartBtn} 
-          onPress={() => toggleFavourite(lot.id)}
+          onPress={() => {
+            Sentry.addBreadcrumb({ category: 'user.action', message: 'User toggled favorite', level: 'info', data: { lotName: lot.name, isFav: !isFav } });
+            toggleFavourite(lot.id);
+          }}
           activeOpacity={0.7}
         >
           <Ionicons 

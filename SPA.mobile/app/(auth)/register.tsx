@@ -10,6 +10,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { palette, spacing, radius, typography, shadows } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import * as Sentry from '@sentry/react-native';
 
 export default function RegisterScreen() {
   const insets = useSafeAreaInsets();
@@ -23,6 +24,7 @@ export default function RegisterScreen() {
   const [error, setError] = useState('');
 
   const handleRegister = async () => {
+    Sentry.addBreadcrumb({ category: 'user.action', message: 'User pressed register button', level: 'info', data: { screen: 'RegisterScreen' } });
     if (!firstName || !lastName || !email || !password) {
       setError('Vui lòng điền đầy đủ các thông tin');
       return;
@@ -86,7 +88,10 @@ export default function RegisterScreen() {
                 <Ionicons name="lock-closed-outline" size={18} color={palette.textSecondary} />
                 <TextInput style={styles.input} placeholder="••••••••" placeholderTextColor={palette.textSecondary}
                   value={password} onChangeText={setPassword} secureTextEntry={!showPassword} />
-                <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                <TouchableOpacity onPress={() => {
+                  Sentry.addBreadcrumb({ category: 'user.action', message: 'User toggled password visibility', level: 'info', data: { screen: 'RegisterScreen', action: showPassword ? 'hide' : 'show' } });
+                  setShowPassword(!showPassword);
+                }}>
                   <Ionicons name={showPassword ? 'eye-off-outline' : 'eye-outline'} size={18} color={palette.textSecondary} />
                 </TouchableOpacity>
               </View>
@@ -99,7 +104,10 @@ export default function RegisterScreen() {
 
           <View style={styles.signInRow}>
             <Text style={styles.signInText}>Đã có tài khoản? </Text>
-            <TouchableOpacity onPress={() => router.back()}>
+            <TouchableOpacity onPress={() => {
+              Sentry.addBreadcrumb({ category: 'user.action', message: 'User navigated to login', level: 'info', data: { screen: 'RegisterScreen' } });
+              router.back();
+            }}>
               <Text style={styles.signInLink}>Đăng nhập</Text>
             </TouchableOpacity>
           </View>

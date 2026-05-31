@@ -55,6 +55,13 @@ export default function CheckoutScreen() {
     : true; // card/momo luôn "giả" thành công
 
   const handlePayment = async () => {
+    Sentry.addBreadcrumb({
+      category: 'user.action',
+      message: 'User pressed checkout button',
+      level: 'info',
+      data: { screen: 'CheckoutScreen', method: selectedMethod.brand },
+    });
+
     if (!canPay) {
       // Track: người dùng bị chặn vì không đủ tiền → điểm rơi (drop-off)
       analyticsService.logEvent('payment_blocked', {

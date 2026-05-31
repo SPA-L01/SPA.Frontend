@@ -11,6 +11,7 @@ import { useBookings } from '@/context/BookingContext';
 import { useParkingSpot } from '@/context/ParkingSpotContext';
 import { ParkingSpot } from '@/types/parking-spot';
 import { Skeleton } from '@/components/ui/Skeleton';
+import * as Sentry from '@sentry/react-native';
 
 function formatDate(iso: string) {
   const d = new Date(iso);
@@ -31,7 +32,10 @@ function CurrentSpotCard({ spot }: { spot: ParkingSpot }) {
   const locationParts = [spot.floor, spot.zone, spot.column].filter(Boolean);
 
   return (
-    <TouchableOpacity style={styles.currentCard} onPress={() => router.push('/spot/current')} activeOpacity={0.85}>
+    <TouchableOpacity style={styles.currentCard} onPress={() => {
+      Sentry.addBreadcrumb({ category: 'user.action', message: 'User pressed current spot', level: 'info', data: { screen: 'HistoryScreen' } });
+      router.push('/spot/current');
+    }} activeOpacity={0.85}>
       <View style={styles.currentCardTop}>
         <View style={styles.activePulse}>
           <View style={styles.activeDot} />
@@ -69,7 +73,10 @@ function SpotHistoryCard({ spot }: { spot: ParkingSpot }) {
   return (
     <TouchableOpacity
       style={styles.spotHistoryCard}
-      onPress={() => router.push(`/spot/history/${spot.id}`)}
+      onPress={() => {
+        Sentry.addBreadcrumb({ category: 'user.action', message: 'User pressed history spot', level: 'info', data: { screen: 'HistoryScreen' } });
+        router.push(`/spot/history/${spot.id}`);
+      }}
       activeOpacity={0.85}
     >
       <View style={styles.spotHistoryIconBox}>
@@ -137,7 +144,10 @@ export default function HistoryScreen() {
           </Text>
           <TouchableOpacity 
             style={styles.exploreBtn} 
-            onPress={() => router.push('/(tabs)/map')}
+            onPress={() => {
+              Sentry.addBreadcrumb({ category: 'user.action', message: 'User navigated to map from empty history', level: 'info', data: { screen: 'HistoryScreen' } });
+              router.push('/(tabs)/map');
+            }}
             activeOpacity={0.85}
           >
             <Ionicons name="search" size={18} color={palette.white} style={{ marginRight: 8 }} />
@@ -188,7 +198,10 @@ export default function HistoryScreen() {
                     <TouchableOpacity
                       style={styles.bookingItem}
                       activeOpacity={0.85}
-                      onPress={() => router.push(`/booking/${item.id}`)}
+                      onPress={() => {
+                        Sentry.addBreadcrumb({ category: 'user.action', message: 'User pressed booking item', level: 'info', data: { screen: 'HistoryScreen' } });
+                        router.push(`/booking/${item.id}`);
+                      }}
                     >
                       <View style={styles.bookingIconBox}>
                         <Ionicons name="car" size={18} color={palette.white} />

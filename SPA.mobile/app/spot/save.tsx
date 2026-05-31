@@ -12,6 +12,7 @@ import { locationService } from '@/services/location.service';
 import { photoService } from '@/services/photo.service';
 import { notificationService } from '@/services/notification.service';
 import { ParkingSpot, ParkingSpotPhoto } from '@/types/parking-spot';
+import * as Sentry from '@sentry/react-native';
 
 const MAX_PHOTOS = 3;
 
@@ -46,12 +47,26 @@ export default function SaveSpotScreen() {
       Alert.alert('Tối đa 3 ảnh', 'Xoá một ảnh để thêm ảnh mới.');
       return;
     }
+
+    Sentry.addBreadcrumb({
+      category: 'user.action',
+      message: useCamera ? 'User opened camera' : 'User opened photo library',
+      level: 'info',
+      data: { screen: 'SaveSpotScreen' },
+    });
+
     const persistedUri = useCamera
       ? await photoService.launchCamera()
       : await photoService.launchLibrary();
 
     if (persistedUri) {
       setPhotos((prev) => [...prev, { uri: persistedUri, takenAt: new Date().toISOString() }]);
+      Sentry.addBreadcrumb({
+        category: 'user.action',
+        message: 'User added a photo',
+        level: 'info',
+        data: { screen: 'SaveSpotScreen' },
+      });
     }
   };
 
@@ -59,9 +74,22 @@ export default function SaveSpotScreen() {
     const photo = photos[index];
     await photoService.deletePhoto(photo.uri);
     setPhotos((prev) => prev.filter((_, i) => i !== index));
+    Sentry.addBreadcrumb({
+      category: 'user.action',
+      message: 'User removed a photo',
+      level: 'info',
+      data: { screen: 'SaveSpotScreen' },
+    });
   };
 
   const handleSave = async () => {
+    Sentry.addBreadcrumb({
+      category: 'user.action',
+      message: 'User pressed save spot button',
+      level: 'info',
+      data: { screen: 'SaveSpotScreen', hasLocation: !!gps },
+    });
+
     const doSave = async () => {
       setSaving(true);
       const now = new Date().toISOString();

@@ -18,12 +18,10 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { palette, spacing, radius, typography, shadows } from '@/constants/theme';
 import { ParkingCard } from '@/components/ui/ParkingCard';
 import { CategoryButton } from '@/components/ui/CategoryButton';
-import {
-  DEFAULT_LOCATION,
-  CURRENT_ADDRESS,
-} from '@/constants/mockData';
+import { DEFAULT_LOCATION, CURRENT_ADDRESS } from '@/constants/mockData';
 import { useWallet } from '@/context/WalletContext';
 import { parkingService, userService } from '@/services/api';
+import * as Sentry from '@sentry/react-native';
 
 // react-native-maps is native-only
 let MapView: any = null;
@@ -156,7 +154,10 @@ export default function HomeScreen() {
             onChangeText={setSearch}
           />
           {search.length > 0 && (
-            <TouchableOpacity onPress={() => setSearch('')}>
+            <TouchableOpacity onPress={() => {
+              Sentry.addBreadcrumb({ category: 'user.action', message: 'User cleared search', level: 'info', data: { screen: 'HomeScreen' } });
+              setSearch('');
+            }}>
               <Ionicons name="close-circle" size={18} color={palette.textMuted} />
             </TouchableOpacity>
           )}
@@ -207,7 +208,10 @@ export default function HomeScreen() {
               type={cat.type}
               label={cat.label}
               isSelected={selectedCategory === cat.type}
-              onPress={() => setSelectedCategory(cat.type)}
+              onPress={() => {
+                Sentry.addBreadcrumb({ category: 'user.action', message: 'User changed category filter', level: 'info', data: { screen: 'HomeScreen', filter: cat.type } });
+                setSelectedCategory(cat.type);
+              }}
             />
           ))}
         </View>

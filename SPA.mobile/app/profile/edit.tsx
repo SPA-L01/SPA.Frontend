@@ -9,6 +9,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { palette, spacing, radius, typography, shadows } from '@/constants/theme';
 import { userService } from '@/services/api';
 import * as ImagePicker from 'expo-image-picker';
+import * as Sentry from '@sentry/react-native';
 
 export default function ProfileEditScreen() {
   const [loading, setLoading] = useState(true);
@@ -43,6 +44,7 @@ export default function ProfileEditScreen() {
   };
 
   const handleSave = async () => {
+    Sentry.addBreadcrumb({ category: 'user.action', message: 'User saved profile', level: 'info', data: { screen: 'ProfileEditScreen' } });
     setSaving(true);
     try {
       await userService.updateProfile({
@@ -67,6 +69,7 @@ export default function ProfileEditScreen() {
     });
 
     if (!result.canceled) {
+      Sentry.addBreadcrumb({ category: 'user.action', message: 'User changed avatar', level: 'info', data: { screen: 'ProfileEditScreen' } });
       // In a real app, you'd upload this to S3/Cloudinary. 
       // For now, we'll just set the local URI (it won't persist across devices but works for demo).
       setProfile({ ...profile, avatarUrl: result.assets[0].uri });

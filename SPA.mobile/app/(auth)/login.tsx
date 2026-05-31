@@ -21,6 +21,7 @@ const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 import { syncService } from '@/services/sync.service';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import * as Sentry from '@sentry/react-native';
 
 export default function LoginScreen() {
   const insets = useSafeAreaInsets();
@@ -34,6 +35,7 @@ export default function LoginScreen() {
   const [error, setError] = useState('');
 
   const handleLogin = async () => {
+    Sentry.addBreadcrumb({ category: 'user.action', message: 'User pressed login button', level: 'info', data: { screen: 'LoginScreen' } });
     if (!email || !password) {
       setError('Vui lòng nhập email và mật khẩu');
       return;
@@ -153,7 +155,10 @@ export default function LoginScreen() {
                   onFocus={() => setPasswordFocused(true)}
                   onBlur={() => setPasswordFocused(false)}
                 />
-                <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                <TouchableOpacity onPress={() => {
+                  Sentry.addBreadcrumb({ category: 'user.action', message: 'User toggled password visibility', level: 'info', data: { screen: 'LoginScreen', action: showPassword ? 'hide' : 'show' } });
+                  setShowPassword(!showPassword);
+                }}>
                   <Ionicons
                     name={showPassword ? 'eye-off-outline' : 'eye-outline'}
                     size={18}
@@ -204,7 +209,10 @@ export default function LoginScreen() {
           {/* Sign Up */}
           <View style={styles.signUpRow}>
             <Text style={styles.signUpText}>Chưa có tài khoản? </Text>
-            <TouchableOpacity onPress={() => router.push('/(auth)/register')}>
+            <TouchableOpacity onPress={() => {
+              Sentry.addBreadcrumb({ category: 'user.action', message: 'User navigated to register', level: 'info', data: { screen: 'LoginScreen' } });
+              router.push('/(auth)/register');
+            }}>
               <Text style={styles.signUpLink}>Đăng ký</Text>
             </TouchableOpacity>
           </View>

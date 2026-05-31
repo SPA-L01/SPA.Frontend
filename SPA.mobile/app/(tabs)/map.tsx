@@ -21,6 +21,7 @@ import * as Location from 'expo-location';
 import { palette, spacing, radius, typography, shadows } from '@/constants/theme';
 import { mockParkingLots, DEFAULT_LOCATION } from '@/constants/mockData';
 import { parkingService } from '@/services/api';
+import * as Sentry from '@sentry/react-native';
 
 // react-native-maps is native-only
 let MapView: any = null;
@@ -150,6 +151,7 @@ export default function MapScreen() {
   }, []);
 
   const onMarkerPress = (lot: any) => {
+    Sentry.addBreadcrumb({ category: 'user.action', message: 'User selected marker', level: 'info', data: { screen: 'MapScreen', lotName: lot.name } });
     setSelectedLot(lot);
     if (Platform.OS !== 'web') {
       Haptics.selectionAsync();
@@ -169,6 +171,7 @@ export default function MapScreen() {
   };
 
   const recenter = async () => {
+    Sentry.addBreadcrumb({ category: 'user.action', message: 'User pressed recenter map', level: 'info', data: { screen: 'MapScreen' } });
     setSelectedLot(null);
 
     if (currentLocation) {
@@ -335,6 +338,7 @@ export default function MapScreen() {
               style={styles.listCard}
               activeOpacity={0.85}
               onPress={() => {
+                Sentry.addBreadcrumb({ category: 'user.action', message: 'User selected parking lot from map list', level: 'info', data: { screen: 'MapScreen', lotName: item.name } });
                 onMarkerPress(item);
                 router.push(`/parking/${item.id}`);
               }}

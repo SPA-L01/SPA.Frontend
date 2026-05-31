@@ -5,13 +5,13 @@ import {
   StyleSheet,
   TouchableOpacity,
   Dimensions,
-  SafeAreaView,
   Platform,
   TextInput,
   Keyboard,
   Image,
   Alert,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import BottomSheet, { BottomSheetFlatList, BottomSheetView } from '@gorhom/bottom-sheet';
@@ -51,7 +51,7 @@ function normalizeParkingLot(lot: any) {
 export default function MapScreen() {
   const [search, setSearch] = useState('');
   const [selectedLot, setSelectedLot] = useState<any | null>(null);
-  const [parkingLots, setParkingLots] = useState<any[]>(mockParkingLots.map(normalizeParkingLot));
+  const [parkingLots, setParkingLots] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [currentLocation, setCurrentLocation] = useState<{ latitude: number; longitude: number } | null>(null);
   const [locationDenied, setLocationDenied] = useState(false);
@@ -71,10 +71,13 @@ export default function MapScreen() {
       }
       
       if (data && data.length > 0) {
-        setParkingLots(data.map(normalizeParkingLot));
+        setParkingLots(data.slice(0, 50).map(normalizeParkingLot)); // Giới hạn tối đa 50 bãi gần nhất để tránh map bị lag/crash do quá nhiều Marker
+      } else {
+        setParkingLots([]);
       }
     } catch (error) {
       console.error('Failed to fetch parking locations:', error);
+      setParkingLots([]);
     } finally {
       setLoading(false);
     }

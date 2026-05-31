@@ -5,13 +5,13 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  SafeAreaView,
   StatusBar,
   Dimensions,
   Modal,
   ActivityIndicator,
   Image,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { palette, spacing, radius, typography, shadows } from '@/constants/theme';
@@ -109,10 +109,8 @@ function SlotCell({
 export default function ParkingDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
 
-  // Parking lot info — from API, fallback to mock
-  const [lot, setLot] = useState<any>(
-    mockParkingLots.find((l) => l.id === id) ?? mockParkingLots[2]
-  );
+  // Parking lot info — from API
+  const [lot, setLot] = useState<any>(null);
   const [lotLoading, setLotLoading] = useState(true);
 
   // Slots from API
@@ -574,15 +572,20 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.md,
     backgroundColor: palette.white,
   },
-  priceSection: { gap: 2 },
+  priceSection: { flex: 1, gap: 2 },
   priceLabel: { ...typography.caption, color: palette.textSecondary },
   priceValue: { fontSize: 22, fontWeight: '800', color: palette.textPrimary },
   priceSub: { fontSize: 14, fontWeight: '400', color: palette.textSecondary },
   bookBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: palette.darkBg,
-    paddingHorizontal: 28,
+    paddingHorizontal: 16,
     paddingVertical: 14,
     borderRadius: radius.full,
+    minWidth: 150,
+    flexShrink: 0,
     ...shadows.md,
   },
   bookBtnDisabled: { backgroundColor: palette.textSecondary },

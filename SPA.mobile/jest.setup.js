@@ -169,4 +169,38 @@ jest.mock('@/services/notification.service', () => ({
   },
 }));
 
+jest.mock('react-native-safe-area-context', () => {
+  const inset = { top: 40, right: 0, bottom: 20, left: 0 };
+  return {
+    SafeAreaProvider: ({ children }) => children,
+    SafeAreaView: ({ children }) => children,
+    useSafeAreaInsets: () => inset,
+    useSafeAreaFrame: () => ({ x: 0, y: 0, width: 390, height: 844 }),
+  };
+});
 
+jest.mock('@sentry/react-native', () => ({
+  init: jest.fn(),
+  captureMessage: jest.fn(),
+  captureException: jest.fn(),
+  addBreadcrumb: jest.fn(),
+  metrics: {
+    count: jest.fn(),
+  },
+  wrap: (c) => c,
+}));
+
+jest.mock('expo-image-picker', () => ({
+  launchCameraAsync: jest.fn().mockResolvedValue({ canceled: true, assets: [] }),
+  launchImageLibraryAsync: jest.fn().mockResolvedValue({ canceled: true, assets: [] }),
+  requestCameraPermissionsAsync: jest.fn().mockResolvedValue({ status: 'granted' }),
+  requestMediaLibraryPermissionsAsync: jest.fn().mockResolvedValue({ status: 'granted' }),
+  MediaTypeOptions: { Images: 'Images', Videos: 'Videos', All: 'All' },
+}));
+
+jest.mock('expo-file-system/legacy', () => ({
+  documentDirectory: 'file:///test-documents/',
+  copyAsync: jest.fn().mockResolvedValue(undefined),
+  deleteAsync: jest.fn().mockResolvedValue(undefined),
+  getInfoAsync: jest.fn().mockResolvedValue({ exists: true }),
+}));

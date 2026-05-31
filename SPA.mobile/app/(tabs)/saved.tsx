@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, SafeAreaView, StatusBar } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, StatusBar } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { palette, spacing, typography, radius } from '@/constants/theme';
 import { useFavourites } from '@/context/FavouritesContext';
 import { ParkingCard } from '@/components/ui/ParkingCard';
@@ -8,16 +9,15 @@ import { Skeleton } from '@/components/ui/Skeleton';
 
 export default function SavedScreen() {
   const { favouriteLots, loading } = useFavourites();
+  const insets = useSafeAreaInsets();
 
   return (
     <View style={styles.root}>
       <StatusBar barStyle="light-content" backgroundColor={palette.darkBg} />
       
-      <View style={styles.header}>
-        <SafeAreaView>
-          <Text style={styles.headerTitle}>Yêu thích</Text>
-          <Text style={styles.headerSub}>{favouriteLots.length} địa điểm đã lưu</Text>
-        </SafeAreaView>
+      <View style={[styles.header, { paddingTop: Math.max(insets.top, spacing.md) }]}>
+        <Text style={styles.headerTitle}>Yêu thích</Text>
+        <Text style={styles.headerSub}>{favouriteLots.length} địa điểm đã lưu</Text>
       </View>
 
       <ScrollView 

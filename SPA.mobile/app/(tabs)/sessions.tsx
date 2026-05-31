@@ -1,10 +1,11 @@
 import React, { useState, useCallback } from 'react';
 import {
   View, Text, ScrollView, StyleSheet, TouchableOpacity,
-  SafeAreaView, StatusBar, ActivityIndicator, Alert,
+  StatusBar, ActivityIndicator, Alert,
 } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { palette, spacing, radius, typography, shadows } from '@/constants/theme';
 import { sessionsService } from '@/services/api';
 import { useWallet } from '@/context/WalletContext';
@@ -99,6 +100,7 @@ export default function SessionsScreen() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'ALL' | 'ACTIVE' | 'COMPLETED' | 'CANCELLED'>('ALL');
   const [showSurvey, setShowSurvey] = useState(false);
+  const insets = useSafeAreaInsets();
 
   const loadSessions = useCallback(async () => {
     setLoading(true);
@@ -203,24 +205,22 @@ export default function SessionsScreen() {
     <View style={styles.root}>
       <StatusBar barStyle="light-content" backgroundColor={palette.darkBg} />
 
-      <View style={styles.header}>
-        <SafeAreaView>
-          <Text style={styles.headerTitle}>Phiên gửi xe</Text>
-          <Text style={styles.headerSub}>{sessions.length} phiên</Text>
-          <View style={styles.filterRow}>
-            {FILTERS.map((f) => (
-              <TouchableOpacity
-                key={f.key}
-                style={[styles.filterPill, filter === f.key && styles.filterPillActive]}
-                onPress={() => setFilter(f.key)}
-              >
-                <Text style={[styles.filterPillText, filter === f.key && styles.filterPillTextActive]}>
-                  {f.label}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </SafeAreaView>
+      <View style={[styles.header, { paddingTop: Math.max(insets.top, spacing.md) }]}>
+        <Text style={styles.headerTitle}>Phiên gửi xe</Text>
+        <Text style={styles.headerSub}>{sessions.length} phiên</Text>
+        <View style={styles.filterRow}>
+          {FILTERS.map((f) => (
+            <TouchableOpacity
+              key={f.key}
+              style={[styles.filterPill, filter === f.key && styles.filterPillActive]}
+              onPress={() => setFilter(f.key)}
+            >
+              <Text style={[styles.filterPillText, filter === f.key && styles.filterPillTextActive]}>
+                {f.label}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
       </View>
 
       {loading ? (

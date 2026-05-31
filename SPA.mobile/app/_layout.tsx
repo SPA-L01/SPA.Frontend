@@ -15,6 +15,7 @@ import { ToastProvider } from '@/context/ToastContext';
 import { notificationService } from '@/services/notification.service';
 import { analyticsService } from '@/services/analytics.service';
 import { useEffect } from 'react';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -38,11 +39,8 @@ function RootNavigator() {
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <ScreenViewTracker />
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-        <Stack.Screen name="onboarding" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal', headerShown: true }} />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>
@@ -52,12 +50,12 @@ function RootNavigator() {
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import * as Sentry from '@sentry/react-native';
 
-// Khởi tạo Sentry cho ứng dụng React Native
 Sentry.init({
-  dsn: 'https://e14d3eaa5e0f457f8d6f3cde386b5770@o4507119106097152.ingest.us.sentry.io/4507119114354688',
-  debug: false,           // tắt console spam, vẫn gửi lên server
+  dsn: 'https://b6bd333f45198113f1995b0ad16a71f6@o4511451166408704.ingest.us.sentry.io/4511482737524736',
+  debug: false,           // Tắt debug log nội bộ của Sentry
   tracesSampleRate: 1.0,  // 100% performance traces
   enableNativeNagger: false,
+  enabled: true,          // Bật Sentry để test nhận sự cố và biểu đồ trên Sentry Dashboard
 });
 
 function RootLayout() {
@@ -85,23 +83,25 @@ function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <ErrorBoundary>
-        <AuthProvider>
-          <AppModeProvider>
-            <ToastProvider>
-              <WalletProvider>
-                <BookingProvider>
-                  <ParkingSpotProvider>
-                    <FavouritesProvider>
-                      <RootNavigator />
-                    </FavouritesProvider>
-                  </ParkingSpotProvider>
-                </BookingProvider>
-              </WalletProvider>
-            </ToastProvider>
-          </AppModeProvider>
-        </AuthProvider>
-      </ErrorBoundary>
+      <SafeAreaProvider>
+        <ErrorBoundary>
+          <AuthProvider>
+            <AppModeProvider>
+              <ToastProvider>
+                <WalletProvider>
+                  <BookingProvider>
+                    <ParkingSpotProvider>
+                      <FavouritesProvider>
+                        <RootNavigator />
+                      </FavouritesProvider>
+                    </ParkingSpotProvider>
+                  </BookingProvider>
+                </WalletProvider>
+              </ToastProvider>
+            </AppModeProvider>
+          </AuthProvider>
+        </ErrorBoundary>
+      </SafeAreaProvider>
     </GestureHandlerRootView>
   );
 }

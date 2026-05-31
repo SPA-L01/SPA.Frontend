@@ -5,13 +5,13 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  SafeAreaView,
   StatusBar,
   ActivityIndicator,
 } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { palette, spacing, radius, typography, shadows } from '@/constants/theme';
 import { mockUser } from '@/constants/mockData';
 import { useWallet, Transaction } from '@/context/WalletContext';
@@ -48,6 +48,7 @@ function TransactionItem({ item }: { item: Transaction }) {
 
 export default function WalletScreen() {
   const { balance, transactions, loading, reload } = useWallet();
+  const insets = useSafeAreaInsets();
 
   // Reload wallet data every time this screen comes into focus
   useFocusEffect(
@@ -61,18 +62,16 @@ export default function WalletScreen() {
       <StatusBar barStyle="light-content" backgroundColor={palette.darkBg} />
 
       {/* Header */}
-      <View style={styles.header}>
-        <SafeAreaView>
-          <View style={styles.headerInner}>
-            <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-              <Ionicons name="chevron-back" size={24} color={palette.white} />
-            </TouchableOpacity>
-            <Text style={styles.headerTitle}>Ví tiền của tôi</Text>
-            <TouchableOpacity style={styles.supportBtn}>
-              <Ionicons name="help-circle-outline" size={24} color={palette.white} />
-            </TouchableOpacity>
-          </View>
-        </SafeAreaView>
+      <View style={[styles.header, { paddingTop: Math.max(insets.top, spacing.md) }]}>
+        <View style={styles.headerInner}>
+          <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
+            <Ionicons name="chevron-back" size={24} color={palette.white} />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Ví tiền của tôi</Text>
+          <TouchableOpacity style={styles.supportBtn}>
+            <Ionicons name="help-circle-outline" size={24} color={palette.white} />
+          </TouchableOpacity>
+        </View>
       </View>
 
       <ScrollView 

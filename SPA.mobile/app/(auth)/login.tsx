@@ -20,8 +20,10 @@ import { useAuth } from '@/context/AuthContext';
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 import { syncService } from '@/services/sync.service';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function LoginScreen() {
+  const insets = useSafeAreaInsets();
   const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -75,7 +77,7 @@ export default function LoginScreen() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
         <ScrollView
-          contentContainerStyle={styles.scrollContent}
+          contentContainerStyle={[styles.scrollContent, { paddingTop: Math.max(insets.top + spacing.lg, 60) }]}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
@@ -244,7 +246,6 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     paddingHorizontal: spacing.md,
-    paddingTop: SCREEN_HEIGHT * 0.1,
   },
 
   // Logo

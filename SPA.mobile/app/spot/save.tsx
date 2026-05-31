@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView,
-  SafeAreaView, StatusBar, TextInput, Image, Alert, ActivityIndicator,
+  StatusBar, TextInput, Image, Alert, ActivityIndicator, Modal,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import * as ImagePicker from 'expo-image-picker';
 import { palette, spacing, radius, typography, shadows } from '@/constants/theme';
 import { useParkingSpot } from '@/context/ParkingSpotContext';
 import { locationService } from '@/services/location.service';
 import { photoService } from '@/services/photo.service';
+import { notificationService } from '@/services/notification.service';
 import { ParkingSpot, ParkingSpotPhoto } from '@/types/parking-spot';
 
 const MAX_PHOTOS = 3;
@@ -30,6 +31,7 @@ export default function SaveSpotScreen() {
   const [locating, setLocating] = useState(true);
   const [saving, setSaving] = useState(false);
   const [gps, setGps] = useState<{ latitude: number; longitude: number; accuracy: number | null } | null>(null);
+  const [lightboxUri, setLightboxUri] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -44,13 +46,12 @@ export default function SaveSpotScreen() {
       Alert.alert('Tối đa 3 ảnh', 'Xoá một ảnh để thêm ảnh mới.');
       return;
     }
-    const result = useCamera
-      ? await ImagePicker.launchCameraAsync({ quality: 0.7, allowsEditing: true })
-      : await ImagePicker.launchImageLibraryAsync({ quality: 0.7, allowsMultipleSelection: false });
+    const persistedUri = useCamera
+      ? await photoService.launchCamera()
+      : await photoService.launchLibrary();
 
-    if (!result.canceled && result.assets[0]) {
-      const persisted = await photoService.copyToDocumentDirectory(result.assets[0].uri);
-      setPhotos((prev) => [...prev, { uri: persisted, takenAt: new Date().toISOString() }]);
+    if (persistedUri) {
+      setPhotos((prev) => [...prev, { uri: persistedUri, takenAt: new Date().toISOString() }]);
     }
   };
 
@@ -159,7 +160,9 @@ export default function SaveSpotScreen() {
         <View style={styles.photoRow}>
           {photos.map((p, i) => (
             <View key={i} style={styles.photoWrapper}>
-              <Image source={{ uri: p.uri }} style={styles.photoThumb} />
+              <TouchableOpacity onPress={() => setLightboxUri(p.uri)} activeOpacity={0.85}>
+                <Image source={{ uri: p.uri }} style={styles.photoThumb} />
+              </TouchableOpacity>
               <TouchableOpacity style={styles.photoDelete} onPress={() => removePhoto(i)}>
                 <Ionicons name="close-circle" size={22} color="#FF453A" />
               </TouchableOpacity>
@@ -178,6 +181,18 @@ export default function SaveSpotScreen() {
             </View>
           )}
         </View>
+
+        {/* Lightbox */}
+        <Modal visible={lightboxUri !== null} transparent animationType="fade" onRequestClose={() => setLightboxUri(null)}>
+          <View style={styles.lightboxOverlay}>
+            <TouchableOpacity style={styles.lightboxClose} onPress={() => setLightboxUri(null)}>
+              <Ionicons name="close-circle" size={36} color={palette.white} />
+            </TouchableOpacity>
+            {lightboxUri && (
+              <Image source={{ uri: lightboxUri }} style={styles.lightboxImage} resizeMode="contain" />
+            )}
+          </View>
+        </Modal>
 
         <View style={{ height: 120 }} />
       </ScrollView>
@@ -249,12 +264,15 @@ const styles = StyleSheet.create({
 
   sectionLabel: { fontSize: 13, fontWeight: '700', color: palette.textSecondary, marginBottom: spacing.md, textTransform: 'uppercase', letterSpacing: 0.5 },
   photoRow: { flexDirection: 'row', gap: spacing.sm, flexWrap: 'wrap' },
-  photoWrapper: { width: 88, height: 88, borderRadius: radius.md, overflow: 'hidden' },
+  photoWrapper: { width: 88, height: 88, borderRadius: radius.md, overflow: 'hidden', position: 'relative' },
   photoThumb: { width: '100%', height: '100%', borderRadius: radius.md },
-  photoDelete: { position: 'absolute', top: 4, right: 4 },
+  photoDelete: { position: 'absolute', top: 2, right: 2 },
   photoActions: { flexDirection: 'row', gap: spacing.sm },
   photoAddBtn: { width: 88, height: 88, borderRadius: radius.md, backgroundColor: palette.offWhite, borderWidth: 1.5, borderColor: palette.border, borderStyle: 'dashed', alignItems: 'center', justifyContent: 'center', gap: 4 },
   photoAddText: { fontSize: 11, fontWeight: '600', color: palette.textSecondary },
+  lightboxOverlay: { flex: 1, backgroundColor: '#000000EE', justifyContent: 'center', alignItems: 'center' },
+  lightboxImage: { width: '100%', height: '80%' },
+  lightboxClose: { position: 'absolute', top: 48, right: 20, zIndex: 10 },
 
   footer: { padding: spacing.md, borderTopWidth: 1, borderTopColor: palette.border, backgroundColor: palette.white },
   saveBtn: { backgroundColor: palette.darkBg, paddingVertical: 18, borderRadius: radius.full, alignItems: 'center', justifyContent: 'center', ...shadows.md },

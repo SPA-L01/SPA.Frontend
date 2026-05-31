@@ -9,8 +9,10 @@ import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { palette, spacing, radius, typography, shadows } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function RegisterScreen() {
+  const insets = useSafeAreaInsets();
   const { register } = useAuth();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -48,7 +50,7 @@ export default function RegisterScreen() {
       <View style={styles.circle2} />
 
       <KeyboardAvoidingView style={styles.kav} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-        <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+        <ScrollView contentContainerStyle={[styles.scrollContent, { paddingTop: Math.max(insets.top + spacing.lg, 60) }]} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
           <View style={styles.logoSection}>
             <View style={styles.logoCircle}>
               <Ionicons name="car" size={36} color={palette.white} />
@@ -114,7 +116,7 @@ const styles = StyleSheet.create({
   kav: { flex: 1 },
   circle1: { position: 'absolute', width: 300, height: 300, borderRadius: 150, backgroundColor: '#FFFFFF08', top: -80, right: -80 },
   circle2: { position: 'absolute', width: 200, height: 200, borderRadius: 100, backgroundColor: '#FFFFFF05', bottom: 200, left: -60 },
-  scrollContent: { flexGrow: 1, paddingHorizontal: spacing.md, paddingTop: 80 },
+  scrollContent: { flexGrow: 1, paddingHorizontal: spacing.md },
   logoSection: { alignItems: 'center', marginBottom: spacing.xl, gap: spacing.sm },
   logoCircle: { width: 80, height: 80, borderRadius: 40, backgroundColor: '#FFFFFF15', alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: '#FFFFFF20', marginBottom: spacing.xs },
   appName: { fontSize: 32, fontWeight: '800', color: palette.white, letterSpacing: -0.5 },

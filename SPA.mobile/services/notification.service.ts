@@ -42,7 +42,9 @@ export const notificationService = {
         data: { screen: 'history' },
       },
       trigger: {
+        type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
         seconds: 2, // For demo, we show it almost immediately or after a short delay
+        channelId: 'default',
       },
     });
   },
@@ -56,7 +58,9 @@ export const notificationService = {
         body: `Xe của bạn đang ở: ${spotInfo}. Chúc bạn một ngày tốt lành!`,
       },
       trigger: {
+        type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
         seconds: 3 * 3600, // 3 hours
+        channelId: 'default',
       },
     });
   },

@@ -8,13 +8,13 @@ import {
   Image,
   StatusBar,
   Platform,
-  SafeAreaView,
   Dimensions,
   TextInput,
   ActivityIndicator,
 } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { palette, spacing, radius, typography, shadows } from '@/constants/theme';
 import { ParkingCard } from '@/components/ui/ParkingCard';
 import { CategoryButton } from '@/components/ui/CategoryButton';
@@ -52,14 +52,16 @@ export default function HomeScreen() {
   const [parkingLots, setParkingLots] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const { balance, reload } = useWallet();
+  const insets = useSafeAreaInsets();
 
   const loadData = async () => {
     try {
-      const [user, popular] = await Promise.all([
-        userService.getMe(),
-        parkingService.getLocations({ sortBy: 'viewCount', limit: 5 }),
-      ]);
-      setProfile(user);
+      // Load profile và bãi đỗ độc lập để nếu chưa đăng nhập (lỗi 401) vẫn load được danh sách bãi xe
+      userService.getMe()
+        .then((user) => setProfile(user))
+        .catch(() => setProfile(null));
+
+      const popular = await parkingService.getLocations({ sortBy: 'viewCount', limit: 5 });
       setParkingLots(Array.isArray(popular) ? popular : popular.data || []);
     } catch (e) {
       console.error('Home load error:', e);
@@ -101,66 +103,64 @@ export default function HomeScreen() {
       <StatusBar barStyle="light-content" backgroundColor={palette.darkBg} />
 
       {/* ── Dark Header ─────────────────────────────────────── */}
-      <View style={styles.header}>
-        <SafeAreaView>
-          <View style={styles.headerInner}>
-            {/* User greeting */}
-            <TouchableOpacity style={styles.userRow} onPress={() => router.push('/(tabs)/profile')}>
-              {profile?.avatarUrl ? (
-                <Image
-                  source={{ uri: profile.avatarUrl }}
-                  style={styles.avatar}
-                />
-              ) : (
-                <View style={[styles.avatar, styles.avatarPlaceholder]}>
-                  <Ionicons name="person" size={20} color={palette.textMuted} />
-                </View>
-              )}
-              <View style={styles.greetingText}>
-                <Text style={styles.greetingSmall}>Chào mừng quay trở lại!</Text>
-                <Text style={styles.greetingName} numberOfLines={1}>{displayName}</Text>
+      <View style={[styles.header, { paddingTop: Math.max(insets.top, spacing.md) }]}>
+        <View style={styles.headerInner}>
+          {/* User greeting */}
+          <TouchableOpacity style={styles.userRow} onPress={() => router.push('/(tabs)/profile')}>
+            {profile?.avatarUrl ? (
+              <Image
+                source={{ uri: profile.avatarUrl }}
+                style={styles.avatar}
+              />
+            ) : (
+              <View style={[styles.avatar, styles.avatarPlaceholder]}>
+                <Ionicons name="person" size={20} color={palette.textMuted} />
               </View>
-            </TouchableOpacity>
-            {/* Balance Chip & Bell */}
-            <View style={styles.topActions}>
-              <TouchableOpacity 
-                style={styles.balanceHeaderChip}
-                onPress={() => router.push('/wallet')}
-              >
-                <Ionicons name="wallet-outline" size={14} color={palette.white} />
-                <Text style={styles.balanceHeaderText}>
-                  {balance.toLocaleString()}đ
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity style={styles.bellBtn}>
-                <Ionicons name="notifications" size={22} color={palette.white} />
-                <View style={styles.bellDot} />
-              </TouchableOpacity>
-            </View>
-          </View>
-
-          <Text style={styles.heroText}>
-            Bạn cần tìm{'\n'}chỗ đỗ xe ô tô?
-          </Text>
-
-          {/* Search Bar in Header */}
-          <View style={styles.searchContainer}>
-            <Ionicons name="search" size={20} color={palette.textMuted} />
-            <TextInput
-              style={styles.searchInput}
-              placeholder="Tìm kiếm bãi xe theo tên, địa chỉ..."
-              placeholderTextColor={palette.textMuted}
-              value={search}
-              onChangeText={setSearch}
-            />
-            {search.length > 0 && (
-              <TouchableOpacity onPress={() => setSearch('')}>
-                <Ionicons name="close-circle" size={18} color={palette.textMuted} />
-              </TouchableOpacity>
             )}
+            <View style={styles.greetingText}>
+              <Text style={styles.greetingSmall}>Chào mừng quay trở lại!</Text>
+              <Text style={styles.greetingName} numberOfLines={1}>{displayName}</Text>
+            </View>
+          </TouchableOpacity>
+          {/* Balance Chip & Bell */}
+          <View style={styles.topActions}>
+            <TouchableOpacity 
+              style={styles.balanceHeaderChip}
+              onPress={() => router.push('/wallet')}
+            >
+              <Ionicons name="wallet-outline" size={14} color={palette.white} />
+              <Text style={styles.balanceHeaderText}>
+                {balance.toLocaleString()}đ
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.bellBtn}>
+              <Ionicons name="notifications" size={22} color={palette.white} />
+              <View style={styles.bellDot} />
+            </TouchableOpacity>
           </View>
-        </SafeAreaView>
+        </View>
+
+        <Text style={styles.heroText}>
+          Bạn cần tìm{'\n'}chỗ đỗ xe ô tô?
+        </Text>
+
+        {/* Search Bar in Header */}
+        <View style={styles.searchContainer}>
+          <Ionicons name="search" size={20} color={palette.textMuted} />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Tìm kiếm bãi xe theo tên, địa chỉ..."
+            placeholderTextColor={palette.textMuted}
+            value={search}
+            onChangeText={setSearch}
+          />
+          {search.length > 0 && (
+            <TouchableOpacity onPress={() => setSearch('')}>
+              <Ionicons name="close-circle" size={18} color={palette.textMuted} />
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
 
       {/* ── Scrollable Content ──────────────────────────────── */}

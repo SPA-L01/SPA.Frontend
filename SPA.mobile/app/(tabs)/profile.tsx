@@ -5,11 +5,11 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  SafeAreaView,
   StatusBar,
   Image,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { palette, spacing, radius, typography, shadows } from '@/constants/theme';
 import { router, useFocusEffect } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
@@ -24,6 +24,7 @@ export default function ProfileScreen() {
   const [profile, setProfile] = useState<any>(null);
   const [syncTime, setSyncTime] = useState<string | null>(null);
   const [syncing, setSyncing] = useState(false);
+  const insets = useSafeAreaInsets();
 
   const loadSyncStatus = async () => {
     const time = await syncService.getLastSyncedAt();
@@ -69,44 +70,42 @@ export default function ProfileScreen() {
       <StatusBar barStyle="light-content" backgroundColor={palette.darkBg} />
 
       {/* Header */}
-      <View style={styles.header}>
-        <SafeAreaView>
-          <View style={styles.headerInner}>
-            <Text style={styles.headerTitle}>Cá nhân</Text>
-          </View>
+      <View style={[styles.header, { paddingTop: Math.max(insets.top, spacing.md) }]}>
+        <View style={styles.headerInner}>
+          <Text style={styles.headerTitle}>Cá nhân</Text>
+        </View>
 
-          {/* Avatar & Info */}
-          <View style={styles.avatarSection}>
-            <View style={[styles.avatar, styles.avatarPlaceholder]}>
-              {profile?.avatarUrl ? (
-                <Image source={{ uri: profile.avatarUrl }} style={styles.avatarImg} />
-              ) : (
-                <Ionicons name="person" size={40} color={palette.textMuted} />
-              )}
-            </View>
-            <View style={styles.nameSection}>
-              {isGuest ? (
-                <>
-                  <Text style={styles.userName}>Khách</Text>
-                  <Text style={styles.userEmail}>Chưa đăng nhập</Text>
-                </>
-              ) : (
-                <>
-                  <View style={styles.nameRow}>
-                    <Text style={styles.userName}>{displayName}</Text>
-                    <TouchableOpacity 
-                      style={styles.editIconBtn}
-                      onPress={() => router.push('/profile/edit')}
-                    >
-                      <Ionicons name="create-outline" size={18} color={palette.white} />
-                    </TouchableOpacity>
-                  </View>
-                  <Text style={styles.userEmail} numberOfLines={1}>{profile?.email || userId}</Text>
-                </>
-              )}
-            </View>
+        {/* Avatar & Info */}
+        <View style={styles.avatarSection}>
+          <View style={[styles.avatar, styles.avatarPlaceholder]}>
+            {profile?.avatarUrl ? (
+              <Image source={{ uri: profile.avatarUrl }} style={styles.avatarImg} />
+            ) : (
+              <Ionicons name="person" size={40} color={palette.textMuted} />
+            )}
           </View>
-        </SafeAreaView>
+          <View style={styles.nameSection}>
+            {isGuest ? (
+              <>
+                <Text style={styles.userName}>Khách</Text>
+                <Text style={styles.userEmail}>Chưa đăng nhập</Text>
+              </>
+            ) : (
+              <>
+                <View style={styles.nameRow}>
+                  <Text style={styles.userName}>{displayName}</Text>
+                  <TouchableOpacity 
+                    style={styles.editIconBtn}
+                    onPress={() => router.push('/profile/edit')}
+                  >
+                    <Ionicons name="create-outline" size={18} color={palette.white} />
+                  </TouchableOpacity>
+                </View>
+                <Text style={styles.userEmail} numberOfLines={1}>{profile?.email || userId}</Text>
+              </>
+            )}
+          </View>
+        </View>
       </View>
 
       <ScrollView

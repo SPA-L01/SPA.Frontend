@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView,
-  SafeAreaView, StatusBar, Image, ActivityIndicator,
+  StatusBar, Image, ActivityIndicator, Modal,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { palette, spacing, radius, typography, shadows } from '@/constants/theme';
@@ -28,6 +29,7 @@ export default function SpotHistoryDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const [spot, setSpot] = useState<ParkingSpot | null>(null);
   const [loading, setLoading] = useState(true);
+  const [lightboxUri, setLightboxUri] = useState<string | null>(null);
 
   useEffect(() => {
     parkingSpotService.getHistoryItem(id).then((s) => {
@@ -115,11 +117,25 @@ export default function SpotHistoryDetailScreen() {
             <Text style={styles.sectionLabel}>Ảnh đã chụp</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: spacing.lg }}>
               {spot.photos.map((p, i) => (
-                <Image key={i} source={{ uri: p.uri }} style={styles.photoThumb} />
+                <TouchableOpacity key={i} onPress={() => setLightboxUri(p.uri)} activeOpacity={0.85}>
+                  <Image source={{ uri: p.uri }} style={styles.photoThumb} />
+                </TouchableOpacity>
               ))}
             </ScrollView>
           </>
         ) : null}
+
+        {/* Lightbox */}
+        <Modal visible={lightboxUri !== null} transparent animationType="fade" onRequestClose={() => setLightboxUri(null)}>
+          <View style={styles.lightboxOverlay}>
+            <TouchableOpacity style={styles.lightboxClose} onPress={() => setLightboxUri(null)}>
+              <Ionicons name="close-circle" size={36} color="white" />
+            </TouchableOpacity>
+            {lightboxUri && (
+              <Image source={{ uri: lightboxUri }} style={styles.lightboxImage} resizeMode="contain" />
+            )}
+          </View>
+        </Modal>
 
         {hasLocation ? (
           <TouchableOpacity
@@ -173,6 +189,9 @@ const styles = StyleSheet.create({
   timeValue: { fontSize: 14, fontWeight: '700', color: palette.textPrimary },
   sectionLabel: { fontSize: 12, fontWeight: '700', color: palette.textSecondary, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: spacing.sm },
   photoThumb: { width: 120, height: 120, borderRadius: radius.md, marginRight: spacing.sm },
+  lightboxOverlay: { flex: 1, backgroundColor: '#000000EE', justifyContent: 'center', alignItems: 'center' },
+  lightboxImage: { width: '100%', height: '80%' },
+  lightboxClose: { position: 'absolute', top: 48, right: 20, zIndex: 10 },
   navigateBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: '#1976D2', borderRadius: radius.full, paddingVertical: 14 },
   navigateBtnText: { color: palette.white, fontSize: 15, fontWeight: '800' },
 });

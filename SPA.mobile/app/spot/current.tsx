@@ -1,8 +1,9 @@
 import React from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView,
-  SafeAreaView, StatusBar, Image, Alert, ActivityIndicator,
+  StatusBar, Image, Alert, ActivityIndicator, Modal,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { palette, spacing, radius, typography, shadows } from '@/constants/theme';
@@ -32,6 +33,7 @@ function formatDatetime(iso: string): string {
 
 export default function CurrentSpotScreen() {
   const { currentSpot, completeSpot, loading } = useParkingSpot();
+  const [lightboxUri, setLightboxUri] = React.useState<string | null>(null);
 
   if (loading) {
     return (
@@ -155,11 +157,25 @@ export default function CurrentSpotScreen() {
             <Text style={styles.sectionLabel}>Ảnh đã chụp</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.photoScroll}>
               {currentSpot.photos.map((p, i) => (
-                <Image key={i} source={{ uri: p.uri }} style={styles.photoThumb} />
+                <TouchableOpacity key={i} onPress={() => setLightboxUri(p.uri)} activeOpacity={0.85}>
+                  <Image source={{ uri: p.uri }} style={styles.photoThumb} />
+                </TouchableOpacity>
               ))}
             </ScrollView>
           </>
         )}
+
+        {/* Lightbox */}
+        <Modal visible={lightboxUri !== null} transparent animationType="fade" onRequestClose={() => setLightboxUri(null)}>
+          <View style={styles.lightboxOverlay}>
+            <TouchableOpacity style={styles.lightboxClose} onPress={() => setLightboxUri(null)}>
+              <Ionicons name="close-circle" size={36} color="white" />
+            </TouchableOpacity>
+            {lightboxUri && (
+              <Image source={{ uri: lightboxUri }} style={styles.lightboxImage} resizeMode="contain" />
+            )}
+          </View>
+        </Modal>
 
         {/* Navigate button */}
         {hasLocation && (
@@ -238,6 +254,9 @@ const styles = StyleSheet.create({
   sectionLabel: { fontSize: 12, fontWeight: '700', color: palette.textSecondary, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: spacing.sm },
   photoScroll: { marginBottom: spacing.lg },
   photoThumb: { width: 120, height: 120, borderRadius: radius.md, marginRight: spacing.sm },
+  lightboxOverlay: { flex: 1, backgroundColor: '#000000EE', justifyContent: 'center', alignItems: 'center' },
+  lightboxImage: { width: '100%', height: '80%' },
+  lightboxClose: { position: 'absolute', top: 48, right: 20, zIndex: 10 },
 
   navigateBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: '#1976D2', borderRadius: radius.full, paddingVertical: 14, marginBottom: spacing.md },
   navigateBtnText: { color: palette.white, fontSize: 15, fontWeight: '800' },

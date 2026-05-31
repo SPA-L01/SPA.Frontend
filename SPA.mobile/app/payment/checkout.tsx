@@ -5,12 +5,12 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  SafeAreaView,
   StatusBar,
   Image,
   Alert,
   ActivityIndicator,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { palette, spacing, radius, typography, shadows } from '@/constants/theme';
@@ -18,6 +18,7 @@ import { mockPaymentMethods, mockParkingLots, PaymentMethod } from '@/constants/
 import { parkingService, sessionsService } from '@/services/api';
 import { useWallet } from '@/context/WalletContext';
 import { analyticsService } from '@/services/analytics.service';
+import { notificationService } from '@/services/notification.service';
 import * as Sentry from '@sentry/react-native';
 
 const SERVICE_FEE = 2000;
@@ -33,9 +34,7 @@ export default function CheckoutScreen() {
   const { balance, reload } = useWallet();
 
   // Load lot info (from API first, fallback mock)
-  const [lot, setLot] = useState<any>(
-    mockParkingLots.find((l) => l.id === lotId) ?? mockParkingLots[0]
-  );
+  const [lot, setLot] = useState<any>(null);
   useEffect(() => {
     if (!lotId) return;
     parkingService.getLocationDetail(lotId)

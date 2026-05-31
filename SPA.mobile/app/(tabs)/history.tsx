@@ -1,16 +1,16 @@
 import React from 'react';
 import {
-  View, Text, StyleSheet, SafeAreaView, StatusBar,
+  View, Text, StyleSheet, StatusBar,
   ScrollView, TouchableOpacity, Image,
 } from 'react-native';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { palette, spacing, typography, radius, shadows } from '@/constants/theme';
 import { useBookings } from '@/context/BookingContext';
 import { useParkingSpot } from '@/context/ParkingSpotContext';
 import { ParkingSpot } from '@/types/parking-spot';
 import { Skeleton } from '@/components/ui/Skeleton';
-
 
 function formatDate(iso: string) {
   const d = new Date(iso);
@@ -95,6 +95,7 @@ function SpotHistoryCard({ spot }: { spot: ParkingSpot }) {
 export default function HistoryScreen() {
   const { bookings, loading: loadingBookings } = useBookings();
   const { currentSpot, history, loading: loadingSpots } = useParkingSpot();
+  const insets = useSafeAreaInsets();
 
   const loading = loadingBookings || loadingSpots;
   const hasContent = currentSpot || history.length > 0 || bookings.length > 0;
@@ -103,11 +104,9 @@ export default function HistoryScreen() {
     return (
       <View style={styles.root}>
         <StatusBar barStyle="light-content" backgroundColor={palette.darkBg} />
-        <View style={styles.header}>
-          <SafeAreaView>
-            <Text style={styles.headerTitle}>Lịch sử & Vị trí xe</Text>
-            <Text style={styles.headerSub}>Đang tải dữ liệu...</Text>
-          </SafeAreaView>
+        <View style={[styles.header, { paddingTop: Math.max(insets.top, spacing.md) }]}>
+          <Text style={styles.headerTitle}>Lịch sử & Vị trí xe</Text>
+          <Text style={styles.headerSub}>Đang tải dữ liệu...</Text>
         </View>
         <ScrollView contentContainerStyle={styles.listContent}>
           {[1, 2, 3].map(i => (
@@ -122,11 +121,9 @@ export default function HistoryScreen() {
     <View style={styles.root}>
       <StatusBar barStyle="light-content" backgroundColor={palette.darkBg} />
 
-      <View style={styles.header}>
-        <SafeAreaView>
-          <Text style={styles.headerTitle}>Lịch sử & Vị trí xe</Text>
-          <Text style={styles.headerSub}>Lưu vị trí xe của bạn để tìm lại dễ dàng</Text>
-        </SafeAreaView>
+      <View style={[styles.header, { paddingTop: Math.max(insets.top, spacing.md) }]}>
+        <Text style={styles.headerTitle}>Lịch sử & Vị trí xe</Text>
+        <Text style={styles.headerSub}>Lưu vị trí xe của bạn để tìm lại dễ dàng</Text>
       </View>
 
       {!hasContent ? (
@@ -141,8 +138,10 @@ export default function HistoryScreen() {
           <TouchableOpacity 
             style={styles.exploreBtn} 
             onPress={() => router.push('/(tabs)/map')}
+            activeOpacity={0.85}
           >
-            <Text style={styles.exploreBtnText}>🔍  Tìm bãi đỗ ngay</Text>
+            <Ionicons name="search" size={18} color={palette.white} style={{ marginRight: 8 }} />
+            <Text style={styles.exploreBtnText}>Tìm bãi đỗ ngay</Text>
           </TouchableOpacity>
         </View>
       ) : (
@@ -286,16 +285,19 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   exploreBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: palette.darkBg,
-    paddingHorizontal: 32,
-    paddingVertical: 16,
+    paddingHorizontal: 28,
+    paddingVertical: 14,
     borderRadius: radius.full,
-    marginTop: spacing.lg,
+    marginTop: spacing.md,
     ...shadows.md,
   },
   exploreBtnText: {
     color: palette.white,
-    fontWeight: '800',
-    fontSize: 16,
+    fontWeight: '700',
+    fontSize: 15,
   },
 });
